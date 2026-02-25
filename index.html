@@ -3,219 +3,188 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>БЛАГО 2026 | Ramadan</title>
+    <title>БЛАГО | LUXURY EDITION</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;600;800&family=Noto+Sans+Arabic:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;800&display=swap" rel="stylesheet">
     <style>
-        :root { --brand: #ff3b3b; --gold: #d4af37; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+        /* ТВОЯ ПАЛИТРА */
+        :root { 
+            --gold: #d4af37;      /* Матовое золото */
+            --burgundy: #630d0d;  /* Глубокий бордовый */
+            --dark: #080808;      /* Чистый черный */
+            --white: #ffffff;     /* Белый */
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color:transparent; }
+        body { background: var(--dark); color: var(--white); height: 100vh; overflow: hidden; position: fixed; width: 100vw; }
+
+        /* Фон с бордовым свечением */
+        .art-bg { position: fixed; inset: 0; z-index: -1; background: radial-gradient(circle at 50% -20%, #2a0505 0%, var(--dark) 100%); }
+        .mesh { position: absolute; inset: 0; opacity: 0.1; background-image: radial-gradient(var(--gold) 0.5px, transparent 0.5px); background-size: 40px 40px; }
+
+        /* Полумесяцы и звезды (Золото) */
+        .obj { position: absolute; pointer-events: none; color: var(--gold); filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.5)); animation: floatUp linear forwards; opacity: 0; }
+        @keyframes floatUp {
+            0% { transform: translateY(110vh) scale(0.5); opacity: 0; }
+            20% { opacity: 0.7; }
+            80% { opacity: 0.7; }
+            100% { transform: translateY(-10vh) scale(1.2) rotate(15deg); opacity: 0; }
+        }
+
+        /* Заголовок (Белый + Золото) */
+        .title-glow { background: linear-gradient(135deg, var(--white) 0%, var(--gold) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 15px rgba(255,255,255,0.2)); }
+
+        /* Карточки (Стеклянный белый) */
+        .card-glass { background: rgba(255, 255, 255, 0.04); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 40px; }
         
-        body { background: #000; color: #fff; height: 100vh; width: 100vw; overflow: hidden; position: fixed; }
+        /* Шкала (Бордовый + Золото) */
+        .bar-wrap { height: 12px; background: rgba(0,0,0,0.5); border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); overflow: hidden; }
+        .bar-inner { height: 100%; width: 0%; background: linear-gradient(90deg, var(--burgundy), #a00, var(--gold)); box-shadow: 0 0 20px rgba(99, 13, 13, 0.6); transition: width 3s cubic-bezier(0.19, 1, 0.22, 1); }
 
-        /* Живой фон с частицами */
-        #canvas { position: fixed; inset: 0; z-index: -1; }
-        .bg-overlay { position: fixed; inset: 0; background: radial-gradient(circle at center, transparent 0%, #000 90%); z-index: -1; }
+        /* Кнопка (Белая) */
+        .btn-main { background: var(--white); color: var(--dark); border-radius: 30px; font-weight: 800; padding: 24px; width: 100%; text-transform: uppercase; letter-spacing: 3px; font-size: 12px; transition: 0.3s; }
+        .btn-main:active { transform: scale(0.95); background: var(--gold); }
 
-        /* Эффект стекла 2026 */
-        .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 30px; }
-        
-        /* Кнопки */
-        .btn-main { background: #fff; color: #000; border-radius: 22px; font-weight: 800; transition: 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); }
-        .btn-main:active { transform: scale(0.92); filter: brightness(0.9); }
+        .page { position:absolute; inset:0; padding:env(safe-area-inset-top) 30px env(safe-area-inset-bottom); display:none; flex-direction:column; justify-content:center; }
+        .page.active { display:flex; animation: fadeIn 0.8s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Секции */
-        .page { position: absolute; inset: 0; padding: env(safe-area-inset-top) 20px env(safe-area-inset-bottom); display: none; flex-direction: column; justify-content: center; }
-        .page.active { display: flex; animation: pageIn 0.6s ease-out; }
-        @keyframes pageIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Прогресс-бар */
-        .progress-line { height: 10px; background: rgba(255,255,255,0.05); border-radius: 100px; overflow: hidden; position: relative; }
-        .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--gold), var(--brand)); box-shadow: 0 0 20px rgba(212, 175, 55, 0.5); transition: width 2s cubic-bezier(0.34, 1.56, 0.64, 1); }
-
-        input { background: rgba(255,255,255,0.05) !important; border: 1px solid rgba(255,255,255,0.1) !important; color: #fff !important; padding: 20px; border-radius: 20px; outline: none; width: 100%; font-size: 16px; }
-        
-        /* Анимация падающих звезд */
-        .falling-star { position: absolute; top: -50px; pointer-events: none; color: var(--gold); opacity: 0.6; z-index: 0; animation: fall linear forwards; }
-        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
+        input { background: rgba(255,255,255,0.05)!important; border: 1px solid rgba(255,255,255,0.1)!important; color: #fff!important; padding: 22px; border-radius: 25px; outline: none; margin-bottom: 12px; }
     </style>
 </head>
 <body>
-    <div class="bg-overlay"></div>
-    <div id="star-container"></div>
+    <div class="art-bg"><div class="mesh"></div></div>
 
     <div class="app">
         <section id="home" class="page active">
-            <div class="text-center mb-10">
-                <p class="text-[9px] tracking-[0.7em] text-white/30 uppercase mb-3">Ramadan Kareem 2026</p>
-                <h1 id="adminTrigger" class="text-7xl font-extrabold tracking-tighter italic transition-all active:opacity-50">БЛАГО</h1>
-                <p class="Noto Sans Arabic text-gold text-lg mt-2 opacity-60 italic">«Дающий — не обеднеет»</p>
+            <div class="text-center mb-12">
+                <p class="text-[9px] tracking-[1em] text-white/30 uppercase mb-4">Ramadan Kareem 2026</p>
+                <h1 id="adminTrigger" class="text-7xl font-extrabold italic tracking-tighter title-glow">БЛАГО</h1>
+                <p class="text-[10px] tracking-[0.4em] uppercase mt-3 text-white/40">Premium Social Project</p>
             </div>
 
             <div class="grid grid-cols-2 gap-4 mb-4">
-                <div class="glass p-6 text-center">
-                    <p class="text-[10px] uppercase text-white/20 font-bold mb-1 tracking-widest">Собрано</p>
-                    <p class="text-3xl font-bold tracking-tight" id="raisedNum">0 ₽</p>
+                <div class="card-glass p-8 text-center border-white/5">
+                    <p class="text-[8px] text-white/20 uppercase tracking-[0.4em] mb-2">Собрано</p>
+                    <p class="text-3xl font-light" id="raised">0 ₽</p>
                 </div>
-                <div class="glass p-6 text-center">
-                    <p class="text-[10px] uppercase text-white/20 font-bold mb-1 tracking-widest">Накормлено</p>
-                    <p class="text-3xl font-bold tracking-tight" id="fedNum">0</p>
-                </div>
-            </div>
-
-            <div class="glass p-8 mb-10">
-                <div class="flex justify-between items-end mb-4">
-                    <span class="text-[10px] font-bold text-white/40 uppercase tracking-widest">Цель: 100,000 ₽</span>
-                    <span class="text-3xl font-black text-white" id="percNum">0%</span>
-                </div>
-                <div class="progress-line">
-                    <div id="bar" class="progress-fill"></div>
+                <div class="card-glass p-8 text-center border-white/5">
+                    <p class="text-[8px] text-white/20 uppercase tracking-[0.4em] mb-2">Ифтары</p>
+                    <p class="text-3xl font-light" id="fed">0</p>
                 </div>
             </div>
 
-            <div class="space-y-4">
-                <button onclick="nav('transfer')" class="btn-main w-full py-6 text-sm uppercase tracking-widest shadow-2xl shadow-red-900/20">Внести вклад</button>
-                <a href="https://instagram.com/blago.project05" target="_blank" class="glass w-full py-5 flex items-center justify-center gap-3 text-[10px] font-bold uppercase tracking-widest">
-                    <img src="https://cdn-icons-png.flaticon.com/512/174/174855.png" class="w-4 h-4 invert opacity-40">
-                    Instagram
-                </a>
-            </div>
-        </section>
-
-        <section id="transfer" class="page">
-            <div class="glass p-10 text-center">
-                <h2 class="text-xl font-bold mb-10 tracking-widest uppercase text-white/80">Реквизиты</h2>
-                <div class="bg-black/50 rounded-[30px] p-8 border border-white/5 mb-8 active:scale-95 transition-transform" onclick="copy()">
-                    <p class="text-[10px] text-white/20 font-bold uppercase mb-4 tracking-widest">Нажми, чтобы скопировать</p>
-                    <p class="text-2xl font-bold tracking-[0.2em]" id="card">2200 7019 7567 8803</p>
-                    <p id="copyOk" class="text-[10px] text-green-500 mt-4 font-bold opacity-0 uppercase">Скопировано</p>
+            <div class="card-glass p-10 mb-10">
+                <div class="flex justify-between items-center mb-6">
+                    <span class="text-[10px] font-bold text-burgundy uppercase tracking-widest">Progress</span>
+                    <span class="text-4xl font-black tracking-tighter" id="perc">0%</span>
                 </div>
-                <button onclick="finish()" class="btn-main w-full py-6 text-[11px] uppercase tracking-widest mb-6">Я отправил деньги</button>
-                <button onclick="nav('home')" class="text-[10px] text-white/20 font-bold uppercase tracking-[0.3em]">Вернуться</button>
+                <div class="bar-wrap">
+                    <div id="bar" class="bar-inner"></div>
+                </div>
+                <p class="text-[9px] text-white/20 mt-6 text-center uppercase tracking-[0.5em]">Цель: 100,000 Рублей</p>
             </div>
+
+            <button onclick="nav('pay')" class="btn-main shadow-xl shadow-white/5">Внести вклад</button>
         </section>
 
         <section id="admin" class="page">
-            <div class="glass p-8 w-full max-w-md mx-auto">
-                <div class="flex justify-between items-center mb-8">
-                    <h2 class="text-sm font-bold uppercase tracking-widest text-white/40">Управление</h2>
+            <div class="card-glass p-10">
+                <div class="flex justify-between mb-10 items-center">
+                    <h3 class="text-xs uppercase tracking-widest text-gold font-bold">Управление</h3>
                     <button onclick="nav('home')" class="text-2xl">✕</button>
                 </div>
-                <div class="space-y-4 mb-10">
-                    <input type="text" id="aName" placeholder="Имя донора">
-                    <input type="number" id="aSum" placeholder="Сумма (₽)">
-                    <button onclick="add()" class="btn-main w-full py-5 text-xs uppercase">Обновить базу</button>
+                <input type="text" id="aName" placeholder="Имя донора">
+                <input type="number" id="aSum" placeholder="Сумма">
+                <button onclick="save()" class="btn-main !bg-burgundy !text-white !py-5 mb-8">Записать</button>
+                <div id="aList" class="max-h-[200px] overflow-y-auto space-y-3 opacity-40"></div>
+            </div>
+        </section>
+
+        <section id="pay" class="page">
+            <div class="card-glass p-12 text-center">
+                <h3 class="text-[9px] uppercase tracking-[0.5em] text-white/30 mb-12">Номер карты</h3>
+                <div onclick="copy()" class="mb-12 group">
+                    <p class="text-2xl font-bold tracking-widest mb-4 transition-all group-active:scale-90" id="card">2200 7019 7567 8803</p>
+                    <p id="copyStatus" class="text-[9px] text-gold uppercase tracking-widest opacity-0">Скопировано</p>
                 </div>
-                <div id="aList" class="space-y-3 overflow-y-auto max-h-[300px] pr-2"></div>
+                <button onclick="nav('home')" class="btn-main mb-6">Готово</button>
+                <button onclick="nav('home')" class="text-white/20 text-[9px] uppercase tracking-widest">Назад</button>
             </div>
         </section>
     </div>
 
-    <div id="modal" class="fixed inset-0 bg-black/98 backdrop-blur-3xl hidden items-center justify-center z-50 text-center p-10" onclick="this.style.display='none'">
-        <div>
-            <div class="text-6xl mb-8 animate-bounce">🌙</div>
-            <h2 class="text-5xl font-extrabold italic mb-4 tracking-tighter uppercase">JazakAllah<br>Khayran</h2>
-            <p class="text-white/20 uppercase tracking-[0.4em] text-[10px]">Ваш вклад принят</p>
-        </div>
-    </div>
-
     <script>
-        const KEY = 'FBI002KOLA';
+        // ДАННЫЕ ИЗ SUPABASE (ТВОИ КЛЮЧИ ПРОВЕРЕНЫ)
+        const SB_URL = 'https://shvzmhqwsjhdedfifyxg.supabase.co'; 
+        const SB_KEY = 'sb_publishable_xv7CxcH5aN4cvVKNQgSxmQ_voz_6TwH'; 
+        const _client = supabase.createClient(SB_URL, SB_KEY);
         const GOAL = 100000;
-        let db = JSON.parse(localStorage.getItem('blago_final_2026')) || [];
 
-        // Секретный вход: 3 секунды на "БЛАГО"
-        let timer;
-        const trigger = document.getElementById('adminTrigger');
-        trigger.addEventListener('touchstart', () => { timer = setTimeout(() => {
-            const p = prompt('PASSWORD:'); if(p === KEY) nav('admin');
-        }, 3000); });
-        trigger.addEventListener('touchend', () => clearTimeout(timer));
-
-        function nav(id) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            if(id === 'admin') drawAdmin();
-            update(true);
-        }
-
-        function add() {
-            const n = document.getElementById('aName').value, s = parseInt(document.getElementById('aSum').value);
-            if(n && s) {
-                db.unshift({ id: Date.now(), n, s });
-                localStorage.setItem('blago_final_2026', JSON.stringify(db));
-                document.getElementById('aName').value = ''; document.getElementById('aSum').value = '';
-                drawAdmin(); update(true);
+        async function load() {
+            const { data, error } = await _client.from('donations').select('*').order('id', {ascending: false});
+            if (!error) {
+                const total = data.reduce((a, b) => a + (Number(b.s) || 0), 0);
+                const perc = Math.min(100, Math.floor((total/GOAL)*100));
+                document.getElementById('raised').innerText = total.toLocaleString() + ' ₽';
+                document.getElementById('fed').innerText = Math.floor(total/100);
+                document.getElementById('perc').innerText = perc + '%';
+                document.getElementById('bar').style.width = perc + '%';
+                drawAdmin(data);
             }
         }
 
-        function del(id) { db = db.filter(i => i.id !== id); localStorage.setItem('blago_final_2026', JSON.stringify(db)); drawAdmin(); update(true); }
+        async function save() {
+            const n = document.getElementById('aName').value;
+            const s = parseInt(document.getElementById('aSum').value);
+            if(n && s) {
+                await _client.from('donations').insert([{ n, s }]);
+                document.getElementById('aName').value=''; document.getElementById('aSum').value='';
+                load();
+            }
+        }
 
-        function drawAdmin() {
-            document.getElementById('aList').innerHTML = db.map(i => `
-                <div class="glass p-4 flex justify-between items-center border-white/5">
-                    <span class="text-xs font-bold text-white/50">${i.n} — ${i.s}₽</span>
-                    <button onclick="del(${i.id})" class="text-red-500 font-bold p-2">✕</button>
+        function drawAdmin(data) {
+            document.getElementById('aList').innerHTML = data.map(i => `
+                <div class="flex justify-between text-[10px] border-b border-white/5 pb-2 uppercase tracking-widest">
+                    <span>${i.n}</span><span>${i.s} ₽</span>
                 </div>
             `).join('');
         }
 
-        // Анимированный счетчик
-        function animateValue(obj, start, end, duration) {
-            let startTimestamp = null;
-            const step = (timestamp) => {
-                if (!startTimestamp) startTimestamp = timestamp;
-                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-                const val = Math.floor(progress * (end - start) + start);
-                obj.innerHTML = obj.id === 'raisedNum' ? val.toLocaleString() + ' ₽' : 
-                               obj.id === 'percNum' ? val + '%' : val;
-                if (progress < 1) window.requestAnimationFrame(step);
-            };
-            window.requestAnimationFrame(step);
+        function nav(id) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
         }
 
-        function update(anim = false) {
-            const total = db.reduce((a, b) => a + b.s, 0);
-            const perc = Math.min(100, Math.floor((total / GOAL) * 100));
-            const fed = Math.floor(total / 100);
-
-            if(anim) {
-                animateValue(document.getElementById('raisedNum'), 0, total, 1500);
-                animateValue(document.getElementById('fedNum'), 0, fed, 1500);
-                animateValue(document.getElementById('percNum'), 0, perc, 1500);
-            } else {
-                document.getElementById('raisedNum').innerText = total.toLocaleString() + ' ₽';
-                document.getElementById('fedNum').innerText = fed;
-                document.getElementById('percNum').innerText = perc + '%';
-            }
-            document.getElementById('bar').style.width = perc + '%';
-        }
-
-        // Эффект падающих звезд и полумесяцев
-        function createStars() {
-            const container = document.getElementById('star-container');
-            const symbols = ['🌙', '✦', '★', '•'];
-            setInterval(() => {
-                const star = document.createElement('div');
-                star.className = 'falling-star';
-                star.innerText = symbols[Math.floor(Math.random() * symbols.length)];
-                star.style.left = Math.random() * 100 + 'vw';
-                star.style.fontSize = Math.random() * 15 + 10 + 'px';
-                star.style.animationDuration = Math.random() * 3 + 5 + 's';
-                container.appendChild(star);
-                setTimeout(() => star.remove(), 8000);
-            }, 600);
-        }
+        let t;
+        document.getElementById('adminTrigger').addEventListener('touchstart', () => {
+            t = setTimeout(() => { if(prompt('ENTRY CODE:') === 'FBI002KOLA') nav('admin'); }, 3000);
+        });
+        document.getElementById('adminTrigger').addEventListener('touchend', () => clearTimeout(t));
 
         function copy() {
             navigator.clipboard.writeText('2200 7019 7567 8803');
-            const s = document.getElementById('copyOk'); s.style.opacity = '1';
+            const s = document.getElementById('copyStatus'); s.style.opacity = '1';
             setTimeout(() => s.style.opacity = '0', 2000);
         }
 
-        function finish() { document.getElementById('modal').style.display = 'flex'; }
+        // ПРЕМИУМ АНИМАЦИЯ (Золото)
+        function spawn() {
+            const icons = ['☾', '✦', '★'];
+            const s = document.createElement('div');
+            s.className = 'obj';
+            s.innerText = icons[Math.floor(Math.random()*icons.length)];
+            s.style.left = Math.random() * 100 + 'vw';
+            s.style.fontSize = (Math.random() * 20 + 15) + 'px';
+            s.style.animationDuration = (Math.random() * 5 + 7) + 's';
+            document.body.appendChild(s);
+            setTimeout(() => s.remove(), 10000);
+        }
 
-        createStars();
-        window.onload = () => update(true);
+        setInterval(spawn, 1000);
+        window.onload = load;
     </script>
 </body>
 </html>
