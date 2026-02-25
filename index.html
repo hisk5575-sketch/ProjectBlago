@@ -1,195 +1,1208 @@
-<!DOCTYPE html>
-<html lang="ru">
+
+# Создаём index.html - главный файл
+html_content = '''<!DOCTYPE html>
+<html lang="ru" dir="ltr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>БЛАГО 2026 | THE BEST EDITION</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;500;800&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#1a0a0f">
+    <title>خير | Благо Рамадан 2025</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Noto+Naskh+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root { --gold: #f3cf8a; --wine: #5c0a0a; --dark: #050505; }
-        * { margin:0; padding:0; box-sizing:border-box; font-family:'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color:transparent; }
-        
-        body { background: var(--dark); color: #fff; height: 100vh; overflow: hidden; position: fixed; width: 100vw; }
+        :root {
+            --gold: #D4AF37;
+            --gold-light: #F4E8C1;
+            --gold-dark: #B8941F;
+            --burgundy: #2D0A0F;
+            --burgundy-light: #4A151C;
+            --black: #0D0406;
+            --white: #FAF8F3;
+            --cream: #F5F0E8;
+        }
 
-        /* Фон: Живое бордовое сияние */
-        .bg-glow { position: fixed; inset: 0; z-index: -1; background: radial-gradient(circle at 50% -10%, var(--wine) 0%, var(--dark) 80%); }
-        .bg-glow::after { content: ''; position: absolute; inset: 0; background: url('https://www.transparenttextures.com/patterns/stardust.png'); opacity: 0.2; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-        /* Золотая пыль */
-        .dust { position: absolute; background: var(--gold); border-radius: 50%; opacity: 0.4; pointer-events: none; animation: float linear infinite; }
-        @keyframes float { from { transform: translateY(105vh) scale(1); } to { transform: translateY(-10vh) scale(1.5); } }
+        body {
+            font-family: 'Cormorant Garamond', serif;
+            background: var(--black);
+            color: var(--white);
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
+        }
 
-        /* Пульсирующий заголовок */
-        .brand-title { 
-            font-size: 5rem; font-weight: 800; font-style: italic; letter-spacing: -4px;
-            background: linear-gradient(to bottom, #fff 30%, var(--gold));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        /* Animated Background */
+        .universe {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .star {
+            position: absolute;
+            background: linear-gradient(135deg, var(--gold-light), var(--gold));
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+            animation: fall linear infinite, twinkle 3s ease-in-out infinite;
+            opacity: 0.8;
+        }
+
+        .crescent {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            box-shadow: -4px 2px 0 2px var(--gold);
+            animation: fall linear infinite, rotate 10s linear infinite;
+            opacity: 0.6;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+            }
+            90% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.4; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Glassmorphism Container */
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .arabic-title {
+            font-family: 'Noto Naskh Arabic', serif;
+            font-size: 4rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 50%, var(--gold-dark) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 40px rgba(212, 175, 55, 0.3);
+            margin-bottom: 10px;
+            cursor: pointer;
+            user-select: none;
+            transition: transform 0.3s ease;
+            position: relative;
+            display: inline-block;
+        }
+
+        .arabic-title:active {
+            transform: scale(0.95);
+        }
+
+        .arabic-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            color: var(--gold-light);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-weight: 300;
+        }
+
+        .location {
+            margin-top: 10px;
+            font-size: 1rem;
+            color: rgba(250, 248, 243, 0.6);
+            font-style: italic;
+        }
+
+        /* Main Moon - Clickable for Admin */
+        .moon-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 20px 0;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .moon {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--burgundy-light) 0%, var(--burgundy) 100%);
+            box-shadow: 
+                inset -20px -20px 40px rgba(0,0,0,0.5),
+                0 0 60px rgba(212, 175, 55, 0.2),
+                0 0 100px rgba(212, 175, 55, 0.1);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .moon::before {
+            content: '';
+            position: absolute;
+            top: -10%;
+            right: -10%;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: var(--black);
+            box-shadow: -10px 5px 20px rgba(0,0,0,0.8);
+        }
+
+        .moon.glow {
+            box-shadow: 
+                inset -20px -20px 40px rgba(0,0,0,0.5),
+                0 0 80px rgba(212, 175, 55, 0.6),
+                0 0 120px rgba(212, 175, 55, 0.4);
+            transform: scale(1.05);
+        }
+
+        .moon-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Noto Naskh Arabic', serif;
+            font-size: 3rem;
+            color: var(--gold);
+            z-index: 10;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        .click-indicator {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
+            color: rgba(212, 175, 55, 0.4);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .moon-container:hover .click-indicator {
+            opacity: 1;
+        }
+
+        /* Progress Section */
+        .progress-section {
+            width: 100%;
+            background: rgba(45, 10, 15, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 24px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .progress-label {
+            font-size: 0.9rem;
+            color: var(--gold-light);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .progress-amount {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--gold);
+        }
+
+        .progress-bar-container {
+            height: 8px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--gold-dark), var(--gold), var(--gold-light));
+            border-radius: 4px;
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .progress-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            font-size: 0.85rem;
+            color: rgba(250, 248, 243, 0.6);
+        }
+
+        /* QR Section */
+        .qr-section {
+            width: 100%;
+            background: rgba(45, 10, 15, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 24px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .qr-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
             animation: pulse 4s ease-in-out infinite;
         }
-        @keyframes pulse { 0%, 100% { filter: drop-shadow(0 0 10px rgba(255,255,255,0.1)); transform: scale(1); } 50% { filter: drop-shadow(0 0 30px rgba(243,207,138,0.4)); transform: scale(1.02); } }
 
-        /* Стеклянные карточки с золотой гранью */
-        .glass-card { 
-            background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-            border: 1px solid rgba(243, 207, 138, 0.15); border-radius: 40px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+        @keyframes pulse {
+            0%, 100% { transform: scale(0.8); opacity: 0.5; }
+            50% { transform: scale(1.2); opacity: 0.8; }
         }
 
-        /* Прогресс-бар "Magma" */
-        .progress-box { height: 14px; background: rgba(0,0,0,0.4); border-radius: 50px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); }
-        .progress-bar { 
-            height: 100%; width: 0%; 
-            background: linear-gradient(90deg, var(--wine), #d00, var(--gold)); 
-            box-shadow: 0 0 25px rgba(200, 0, 0, 0.5);
-            transition: width 2.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        .qr-title {
+            font-size: 1.2rem;
+            color: var(--gold-light);
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
         }
 
-        /* Кнопки */
-        .btn-luxe { background: #fff; color: #000; border-radius: 25px; font-weight: 800; padding: 24px; text-transform: uppercase; letter-spacing: 3px; font-size: 11px; transition: 0.4s; }
-        .btn-luxe:active { transform: scale(0.94) rotate(-1deg); background: var(--gold); }
+        .qr-code {
+            width: 220px;
+            height: 220px;
+            margin: 0 auto 20px;
+            background: var(--white);
+            border-radius: 16px;
+            padding: 15px;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
 
-        .page { position:absolute; inset:0; padding: 40px 30px; display:none; flex-direction:column; justify-content:center; }
-        .page.active { display:flex; animation: reveal 0.7s cubic-bezier(0.19, 1, 0.22, 1); }
-        @keyframes reveal { from { opacity:0; transform: translateY(20px) scale(0.95); } to { opacity:1; transform: translateY(0) scale(1); } }
+        .qr-code img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
 
-        input { background: rgba(255,255,255,0.03)!important; border: 1px solid rgba(243,207,138,0.1)!important; color: #fff!important; padding: 22px; border-radius: 25px; outline: none; margin-bottom: 12px; font-size: 16px; }
-        input:focus { border-color: var(--gold)!important; background: rgba(255,255,255,0.06)!important; }
+        .qr-hint {
+            font-size: 0.9rem;
+            color: rgba(250, 248, 243, 0.7);
+            position: relative;
+            z-index: 1;
+        }
+
+        .bank-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 20px;
+            padding: 8px 16px;
+            margin-top: 15px;
+            font-size: 0.85rem;
+            color: var(--gold);
+        }
+
+        /* Donors List */
+        .donors-section {
+            width: 100%;
+            background: rgba(45, 10, 15, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 24px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .donors-section::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .donors-section::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.2);
+            border-radius: 3px;
+        }
+
+        .donors-section::-webkit-scrollbar-thumb {
+            background: var(--gold-dark);
+            border-radius: 3px;
+        }
+
+        .donors-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        .donors-title {
+            font-size: 1.1rem;
+            color: var(--gold-light);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .donors-count {
+            background: var(--gold);
+            color: var(--black);
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .donor-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 12px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .donor-item:hover {
+            background: rgba(212, 175, 55, 0.05);
+            border-color: rgba(212, 175, 55, 0.3);
+            transform: translateX(5px);
+        }
+
+        .donor-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .donor-name {
+            font-size: 1rem;
+            color: var(--white);
+            font-weight: 500;
+        }
+
+        .donor-date {
+            font-size: 0.75rem;
+            color: rgba(250, 248, 243, 0.5);
+            margin-top: 4px;
+        }
+
+        .donor-amount {
+            font-size: 1.2rem;
+            color: var(--gold);
+            font-weight: 600;
+        }
+
+        .loading-text {
+            text-align: center;
+            color: rgba(250, 248, 243, 0.5);
+            padding: 40px;
+            font-style: italic;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: rgba(250, 248, 243, 0.4);
+            font-size: 0.85rem;
+            margin-top: auto;
+        }
+
+        .footer-heart {
+            color: var(--gold);
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* Admin Modal */
+        .admin-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .admin-modal.active {
+            display: flex;
+        }
+
+        .admin-container {
+            background: linear-gradient(135deg, var(--burgundy) 0%, var(--black) 100%);
+            border: 2px solid var(--gold);
+            border-radius: 24px;
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+            box-shadow: 0 0 60px rgba(212, 175, 55, 0.3);
+        }
+
+        .admin-title {
+            font-family: 'Noto Naskh Arabic', serif;
+            font-size: 2rem;
+            color: var(--gold);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .password-input {
+            width: 100%;
+            padding: 15px 20px;
+            background: rgba(0,0,0,0.5);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 12px;
+            color: var(--white);
+            font-size: 1rem;
+            font-family: inherit;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+
+        .password-input:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+        }
+
+        .admin-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+            border: none;
+            border-radius: 12px;
+            color: var(--black);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .admin-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+        }
+
+        .admin-btn:active {
+            transform: translateY(0);
+        }
+
+        .close-admin {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 40px;
+            height: 40px;
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 50%;
+            color: var(--gold);
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .close-admin:hover {
+            background: rgba(212, 175, 55, 0.2);
+            transform: rotate(90deg);
+        }
+
+        .admin-panel {
+            display: none;
+            width: 100%;
+            max-width: 600px;
+            background: linear-gradient(135deg, var(--burgundy) 0%, var(--black) 100%);
+            border: 2px solid var(--gold);
+            border-radius: 24px;
+            padding: 30px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .admin-panel.active {
+            display: block;
+        }
+
+        .admin-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            color: var(--gold);
+            font-weight: 600;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: rgba(250, 248, 243, 0.6);
+            margin-top: 5px;
+        }
+
+        .refresh-btn {
+            width: 100%;
+            padding: 15px;
+            background: rgba(212, 175, 55, 0.1);
+            border: 2px solid var(--gold);
+            border-radius: 12px;
+            color: var(--gold);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .refresh-btn:hover {
+            background: var(--gold);
+            color: var(--black);
+        }
+
+        .refresh-btn.spinning svg {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Success Animation */
+        .success-check {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 100px;
+            background: var(--gold);
+            border-radius: 50%;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            animation: successPop 0.5s ease;
+        }
+
+        .success-check.active {
+            display: flex;
+        }
+
+        @keyframes successPop {
+            0% { transform: translate(-50%, -50%) scale(0); }
+            50% { transform: translate(-50%, -50%) scale(1.2); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+
+        .success-check svg {
+            width: 50px;
+            height: 50px;
+            stroke: var(--black);
+            stroke-width: 3;
+            fill: none;
+            stroke-dasharray: 100;
+            stroke-dashoffset: 100;
+            animation: drawCheck 0.5s ease forwards 0.2s;
+        }
+
+        @keyframes drawCheck {
+            to { stroke-dashoffset: 0; }
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .arabic-title {
+                font-size: 3rem;
+            }
+            
+            .moon-container {
+                width: 160px;
+                height: 160px;
+            }
+            
+            .qr-code {
+                width: 180px;
+                height: 180px;
+            }
+            
+            .admin-container, .admin-panel {
+                padding: 25px;
+            }
+        }
+
+        /* Touch ripple effect */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(212, 175, 55, 0.4);
+            transform: scale(0);
+            animation: ripple 0.6s ease-out;
+            pointer-events: none;
+        }
+
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="bg-glow" id="particles"></div>
+    <!-- Animated Background -->
+    <div class="universe" id="universe"></div>
 
-    <div class="app">
-        <section id="home" class="page active">
-            <div class="text-center mb-12">
-                <p class="text-[9px] tracking-[1.2em] text-white/20 uppercase font-bold mb-6">Ramadan Kareem • 2026</p>
-                <h1 id="adminTrigger" class="brand-title">БЛАГО</h1>
-                <p class="text-[10px] tracking-[0.4em] text-gold/60 uppercase mt-4">Premium Charity System</p>
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1 class="arabic-title" id="secretTitle">خير</h1>
+            <p class="subtitle">Благо</p>
+            <p class="location">Дербент • Рамадан 2025</p>
+        </header>
+
+        <!-- Moon (Secret Admin Entry) -->
+        <div class="moon-container" id="moonContainer">
+            <div class="moon" id="moon">
+                <span class="moon-text">☪</span>
+            </div>
+            <span class="click-indicator">Нажмите 3 раза</span>
+        </div>
+
+        <!-- Progress Section -->
+        <div class="progress-section">
+            <div class="progress-header">
+                <span class="progress-label">Собрано</span>
+                <span class="progress-amount" id="currentAmount">0 ₽</span>
+            </div>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+            </div>
+            <div class="progress-stats">
+                <span>Цель: 100 000 ₽</span>
+                <span id="percentText">0%</span>
+            </div>
+        </div>
+
+        <!-- QR Code Section -->
+        <div class="qr-section">
+            <h3 class="qr-title">Отсканируйте для перевода</h3>
+            <div class="qr-code">
+                <img src="qr-code.png" alt="QR Code для перевода" id="qrImage">
+            </div>
+            <p class="qr-hint">Или переведите через Т-Банк по номеру договора</p>
+            <div class="bank-badge">
+                <span>🏦</span>
+                <span>Т-Банк • 8200967336</span>
+            </div>
+        </div>
+
+        <!-- Donors List -->
+        <div class="donors-section" id="donorsSection">
+            <div class="donors-header">
+                <span class="donors-title">
+                    <span>✨</span>
+                    Последние спонсоры
+                </span>
+                <span class="donors-count" id="donorsCount">0</span>
+            </div>
+            <div id="donorsList">
+                <div class="loading-text">Загрузка данных...</div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Сделано с <span class="footer-heart">❤</span> для уммы</p>
+            <p style="margin-top: 5px; font-size: 0.75rem;">Данные обновляются каждые 2 минуты</p>
+        </footer>
+    </div>
+
+    <!-- Admin Modal -->
+    <div class="admin-modal" id="adminModal">
+        <!-- Login Form -->
+        <div class="admin-container" id="loginForm">
+            <button class="close-admin" id="closeAdmin">×</button>
+            <h2 class="admin-title">خير</h2>
+            <input type="password" class="password-input" id="passwordInput" placeholder="Введите пароль...">
+            <button class="admin-btn" id="loginBtn">Войти</button>
+        </div>
+
+        <!-- Admin Panel -->
+        <div class="admin-panel" id="adminPanel">
+            <button class="close-admin" id="closePanel">×</button>
+            <h2 class="admin-title">Панель управления</h2>
+            
+            <div class="admin-stats">
+                <div class="stat-card">
+                    <div class="stat-value" id="adminTotal">0 ₽</div>
+                    <div class="stat-label">Всего собрано</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="adminCount">0</div>
+                    <div class="stat-label">Спонсоров</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="adminLeft">100K</div>
+                    <div class="stat-label">Осталось</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="adminPercent">0%</div>
+                    <div class="stat-label">Выполнено</div>
+                </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-4 mb-5">
-                <div class="glass-card p-8 text-center border-white/5">
-                    <p class="text-[8px] text-white/20 uppercase tracking-[0.3em] mb-2">Raised</p>
-                    <p class="text-3xl font-light tracking-tighter" id="raised">0 ₽</p>
-                </div>
-                <div class="glass-card p-8 text-center border-white/5">
-                    <p class="text-[8px] text-white/20 uppercase tracking-[0.3em] mb-2">Iftars</p>
-                    <p class="text-3xl font-light tracking-tighter" id="fed">0</p>
-                </div>
-            </div>
+            <button class="refresh-btn" id="refreshBtn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="23 4 23 10 17 10"></polyline>
+                    <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                </svg>
+                Обновить данные
+            </button>
 
-            <div class="glass-card p-10 mb-10">
-                <div class="flex justify-between items-end mb-6">
-                    <span class="text-5xl font-black tracking-tighter" id="perc">0%</span>
-                    <span class="text-[9px] font-bold text-gold uppercase tracking-[0.4em] pb-2">Target 100k</span>
-                </div>
-                <div class="progress-box">
-                    <div id="bar" class="progress-bar"></div>
-                </div>
+            <div style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 15px; margin-top: 20px;">
+                <p style="color: var(--gold-light); font-size: 0.9rem; margin-bottom: 10px;">Инструкция:</p>
+                <p style="color: rgba(250,248,243,0.7); font-size: 0.85rem; line-height: 1.6;">
+                    1. Откройте Google Таблицу<br>
+                    2. Добавьте новую строку: Дата | Имя | Сумма<br>
+                    3. Нажмите "Обновить данные" на сайте<br>
+                    4. Изменения появятся автоматически
+                </p>
             </div>
+        </div>
+    </div>
 
-            <button onclick="nav('pay')" class="btn-luxe">Внести вклад</button>
-        </section>
-
-        <section id="admin" class="page">
-            <div class="glass-card p-10">
-                <div class="flex justify-between items-center mb-10">
-                    <h3 class="text-[10px] font-bold uppercase tracking-[0.5em] text-gold">Control Panel</h3>
-                    <button onclick="nav('home')" class="text-white/20 text-3xl">✕</button>
-                </div>
-                <input type="text" id="aName" placeholder="Имя донора">
-                <input type="number" id="aSum" placeholder="Сумма перевода">
-                <button onclick="save()" class="btn-luxe !bg-red-950 !text-white !py-5 mb-8 border border-white/10">Добавить запись</button>
-                <div id="aList" class="max-h-[200px] overflow-y-auto space-y-4 pr-2 opacity-40 text-[10px] uppercase tracking-widest"></div>
-            </div>
-        </section>
-
-        <section id="pay" class="page">
-            <div class="glass-card p-12 text-center">
-                <p class="text-[9px] uppercase tracking-[0.6em] text-white/20 mb-12">Номер для перевода</p>
-                <div onclick="copy()" class="bg-white/5 rounded-[35px] p-10 border border-white/5 mb-12 active:scale-95 transition-all">
-                    <p class="text-2xl font-bold tracking-[0.1em] text-white" id="card">2200 7019 7567 8803</p>
-                    <p id="copyStatus" class="text-[8px] text-gold mt-4 uppercase font-bold tracking-widest opacity-0">Скопировано в буфер</p>
-                </div>
-                <button onclick="nav('home')" class="btn-luxe mb-6">Готово</button>
-                <button onclick="nav('home')" class="text-white/20 text-[9px] uppercase tracking-[0.5em]">Вернуться</button>
-            </div>
-        </section>
+    <!-- Success Animation -->
+    <div class="success-check" id="successCheck">
+        <svg viewBox="0 0 52 52">
+            <path d="M14 27 L22 35 L38 16"></path>
+        </svg>
     </div>
 
     <script>
-        const SB_URL = 'https://shvzmhqwsjhdedfifyxg.supabase.co'; 
-        const SB_KEY = 'sb_publishable_xv7CxcH5aN4cvVKNQgSxmQ_voz_6TwH'; 
-        const _client = supabase.createClient(SB_URL, SB_KEY);
-        const GOAL = 100000;
+        // Configuration
+        const CONFIG = {
+            GOOGLE_SHEET_ID: '1uppgItrSnXPR742RkgXqxDBD7zPAUXvk2jvA-nLwQTs',
+            TARGET_AMOUNT: 100000,
+            ADMIN_PASSWORD: 'haieuzb2372hjdkwoajc92nf',
+            REFRESH_INTERVAL: 120000 // 2 minutes
+        };
 
-        async function load() {
-            const { data, error } = await _client.from('donations').select('*').order('id', {ascending: false});
-            if (!error) {
-                const total = data.reduce((a, b) => a + (Number(b.s) || 0), 0);
-                const perc = Math.min(100, Math.floor((total/GOAL)*100));
-                document.getElementById('raised').innerText = total.toLocaleString() + ' ₽';
-                document.getElementById('fed').innerText = Math.floor(total/100);
-                document.getElementById('perc').innerText = perc + '%';
-                document.getElementById('bar').style.width = perc + '%';
-                drawAdmin(data);
-            }
-        }
+        // State
+        let moonClicks = 0;
+        let lastClickTime = 0;
+        let donorsData = [];
 
-        async function save() {
-            const n = document.getElementById('aName').value;
-            const s = parseInt(document.getElementById('aSum').value);
-            if(n && s) {
-                await _client.from('donations').insert([{ n, s }]);
-                document.getElementById('aName').value=''; document.getElementById('aSum').value='';
-                load();
-            }
-        }
-
-        function drawAdmin(data) {
-            document.getElementById('aList').innerHTML = data.map(i => `
-                <div class="flex justify-between border-b border-white/5 pb-2">
-                    <span>${i.n}</span><span>${i.s} ₽</span>
-                </div>
-            `).join('');
-        }
-
-        function nav(id) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-        }
-
-        let t;
-        document.getElementById('adminTrigger').addEventListener('touchstart', () => {
-            t = setTimeout(() => { if(prompt('PASSCODE:') === 'FBI002KOLA') nav('admin'); }, 3000);
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            createStars();
+            loadData();
+            setupEventListeners();
+            setInterval(loadData, CONFIG.REFRESH_INTERVAL);
         });
-        document.getElementById('adminTrigger').addEventListener('touchend', () => clearTimeout(t));
 
-        function copy() {
-            navigator.clipboard.writeText('2200 7019 7567 8803');
-            const s = document.getElementById('copyStatus'); s.style.opacity = '1';
-            setTimeout(() => s.style.opacity = '0', 2000);
+        // Create animated stars and crescents
+        function createStars() {
+            const universe = document.getElementById('universe');
+            const starCount = 30;
+            
+            for (let i = 0; i < starCount; i++) {
+                setTimeout(() => {
+                    const isCrescent = Math.random() > 0.8;
+                    const element = document.createElement('div');
+                    element.className = isCrescent ? 'crescent' : 'star';
+                    
+                    const size = Math.random() * 15 + 5;
+                    element.style.width = size + 'px';
+                    element.style.height = size + 'px';
+                    element.style.left = Math.random() * 100 + '%';
+                    element.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                    element.style.animationDelay = Math.random() * 5 + 's';
+                    
+                    universe.appendChild(element);
+                    
+                    // Remove after animation
+                    setTimeout(() => {
+                        element.remove();
+                    }, 20000);
+                }, i * 300);
+            }
+            
+            // Continuous creation
+            setInterval(() => {
+                const isCrescent = Math.random() > 0.8;
+                const element = document.createElement('div');
+                element.className = isCrescent ? 'crescent' : 'star';
+                
+                const size = Math.random() * 15 + 5;
+                element.style.width = size + 'px';
+                element.style.height = size + 'px';
+                element.style.left = Math.random() * 100 + '%';
+                element.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                
+                universe.appendChild(element);
+                
+                setTimeout(() => {
+                    element.remove();
+                }, 20000);
+            }, 1000);
         }
 
-        // Анимация золотой пыли
-        function initParticles() {
-            const container = document.getElementById('particles');
-            for(let i=0; i<45; i++) {
-                const p = document.createElement('div');
-                p.className = 'dust';
-                const size = Math.random() * 2 + 1 + 'px';
-                p.style.width = size; p.style.height = size;
-                p.style.left = Math.random() * 100 + 'vw';
-                p.style.animationDuration = (Math.random() * 8 + 6) + 's';
-                p.style.animationDelay = (Math.random() * 5) + 's';
-                container.appendChild(p);
+        // Setup event listeners
+        function setupEventListeners() {
+            // Moon triple click
+            const moon = document.getElementById('moon');
+            const moonContainer = document.getElementById('moonContainer');
+            
+            moonContainer.addEventListener('click', (e) => {
+                createRipple(e, moon);
+                
+                const now = Date.now();
+                if (now - lastClickTime > 1000) {
+                    moonClicks = 0;
+                }
+                lastClickTime = now;
+                moonClicks++;
+                
+                // Visual feedback
+                moon.classList.add('glow');
+                setTimeout(() => moon.classList.remove('glow'), 300);
+                
+                if (moonClicks === 3) {
+                    moonClicks = 0;
+                    openAdminModal();
+                }
+            });
+
+            // Title triple click (alternative)
+            const title = document.getElementById('secretTitle');
+            title.addEventListener('click', () => {
+                const now = Date.now();
+                if (now - lastClickTime > 1000) {
+                    moonClicks = 0;
+                }
+                lastClickTime = now;
+                moonClicks++;
+                
+                if (moonClicks === 3) {
+                    moonClicks = 0;
+                    openAdminModal();
+                }
+            });
+
+            // Admin modal
+            document.getElementById('closeAdmin').addEventListener('click', closeAdminModal);
+            document.getElementById('closePanel').addEventListener('click', closeAdminModal);
+            document.getElementById('loginBtn').addEventListener('click', checkPassword);
+            document.getElementById('passwordInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') checkPassword();
+            });
+            
+            // Refresh button
+            document.getElementById('refreshBtn').addEventListener('click', () => {
+                const btn = document.getElementById('refreshBtn');
+                btn.classList.add('spinning');
+                loadData().then(() => {
+                    setTimeout(() => btn.classList.remove('spinning'), 1000);
+                });
+            });
+
+            // Close modal on outside click
+            document.getElementById('adminModal').addEventListener('click', (e) => {
+                if (e.target.id === 'adminModal') {
+                    closeAdminModal();
+                }
+            });
+        }
+
+        // Ripple effect
+        function createRipple(e, element) {
+            const rect = element.getBoundingClientRect();
+            const ripple = document.createElement('span');
+            ripple.className = 'ripple';
+            ripple.style.left = (e.clientX - rect.left) + 'px';
+            ripple.style.top = (e.clientY - rect.top) + 'px';
+            element.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 600);
+        }
+
+        // Admin modal functions
+        function openAdminModal() {
+            document.getElementById('adminModal').classList.add('active');
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('adminPanel').classList.remove('active');
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('passwordInput').focus();
+        }
+
+        function closeAdminModal() {
+            document.getElementById('adminModal').classList.remove('active');
+        }
+
+        function checkPassword() {
+            const input = document.getElementById('passwordInput').value;
+            if (input === CONFIG.ADMIN_PASSWORD) {
+                showSuccess();
+                setTimeout(() => {
+                    document.getElementById('loginForm').style.display = 'none';
+                    document.getElementById('adminPanel').classList.add('active');
+                    updateAdminStats();
+                }, 800);
+            } else {
+                document.getElementById('passwordInput').style.borderColor = '#ff4444';
+                setTimeout(() => {
+                    document.getElementById('passwordInput').style.borderColor = '';
+                }, 1000);
             }
         }
 
-        initParticles();
-        window.onload = load;
+        function showSuccess() {
+            const check = document.getElementById('successCheck');
+            check.classList.add('active');
+            setTimeout(() => check.classList.remove('active'), 1500);
+        }
+
+        // Load data from Google Sheets
+        async function loadData() {
+            try {
+                // Using Google Sheets JSON API
+                const url = `https://docs.google.com/spreadsheets/d/${CONFIG.GOOGLE_SHEET_ID}/gviz/tq?tqx=out:json`;
+                
+                const response = await fetch(url);
+                const text = await response.text();
+                
+                // Parse JSONP response
+                const jsonStr = text.replace(/\\?\\?\\(\\)/g, '').replace('google.visualization.Query.setResponse(', '').slice(0, -2);
+                const data = JSON.parse(jsonStr);
+                
+                if (data.table && data.table.rows) {
+                    parseSheetData(data.table);
+                }
+            } catch (error) {
+                console.error('Error loading data:', error);
+                // Load mock data if error
+                loadMockData();
+            }
+        }
+
+        function parseSheetData(table) {
+            const rows = table.rows;
+            donorsData = [];
+            
+            // Skip header row (index 0)
+            for (let i = 1; i < rows.length; i++) {
+                const row = rows[i];
+                if (row.c && row.c[0] && row.c[0].v) {
+                    donorsData.push({
+                        date: row.c[0].v || '',
+                        name: row.c[1] ? row.c[1].v : 'Аноним',
+                        amount: parseInt(row.c[2] ? row.c[2].v : 0) || 0,
+                        note: row.c[3] ? row.c[3].v : ''
+                    });
+                }
+            }
+            
+            updateUI();
+        }
+
+        function loadMockData() {
+            // Fallback data if sheet is not accessible
+            donorsData = [
+                { date: '25.02.2025', name: 'Ахмед', amount: 1000, note: '' },
+                { date: '24.02.2025', name: 'Мухаммад', amount: 500, note: '' }
+            ];
+            updateUI();
+        }
+
+        function updateUI() {
+            const total = donorsData.reduce((sum, d) => sum + d.amount, 0);
+            const percent = Math.min((total / CONFIG.TARGET_AMOUNT) * 100, 100);
+            const count = donorsData.length;
+            
+            // Update progress
+            document.getElementById('currentAmount').textContent = formatMoney(total);
+            document.getElementById('progressBar').style.width = percent + '%';
+            document.getElementById('percentText').textContent = Math.round(percent) + '%';
+            document.getElementById('donorsCount').textContent = count;
+            
+            // Update donors list
+            const listContainer = document.getElementById('donorsList');
+            if (donorsData.length === 0) {
+                listContainer.innerHTML = '<div class="loading-text">Пока нет пожертвований</div>';
+            } else {
+                listContainer.innerHTML = donorsData
+                    .slice()
+                    .reverse()
+                    .map(donor => `
+                        <div class="donor-item">
+                            <div class="donor-info">
+                                <span class="donor-name">${escapeHtml(donor.name)}</span>
+                                <span class="donor-date">${donor.date}</span>
+                            </div>
+                            <span class="donor-amount">+${formatMoney(donor.amount)}</span>
+                        </div>
+                    `).join('');
+            }
+            
+            // Update admin stats if open
+            updateAdminStats();
+        }
+
+        function updateAdminStats() {
+            const total = donorsData.reduce((sum, d) => sum + d.amount, 0);
+            const percent = (total / CONFIG.TARGET_AMOUNT) * 100;
+            const left = Math.max(CONFIG.TARGET_AMOUNT - total, 0);
+            
+            document.getElementById('adminTotal').textContent = formatMoney(total);
+            document.getElementById('adminCount').textContent = donorsData.length;
+            document.getElementById('adminLeft').textContent = formatCompact(left);
+            document.getElementById('adminPercent').textContent = Math.round(percent) + '%';
+        }
+
+        // Utilities
+        function formatMoney(amount) {
+            return new Intl.NumberFormat('ru-RU').format(amount) + ' ₽';
+        }
+
+        function formatCompact(amount) {
+            if (amount >= 1000) {
+                return (amount / 1000).toFixed(0) + 'K';
+            }
+            return amount;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Service Worker for offline support (optional enhancement)
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').catch(() => {});
+        }
     </script>
 </body>
-</html>
+</html>'''
+
+# Сохраняем HTML
+with open(f"{project_dir}/index.html", "w", encoding="utf-8") as f:
+    f.write(html_content)
+
+print("✅ index.html создан")
