@@ -1,1 +1,194 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BLAGO.PROJECT05 — Рамадан 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #000; min-height: 100vh; overflow-x: hidden; color: white; }
+        .arabic-font { font-family: 'Noto Sans Arabic', sans-serif; }
+        
+        /* Сферы фона */
+        .sphere-red { position: fixed; top: -15%; left: 50%; transform: translateX(-50%); width: 70vw; height: 70vw; background: radial-gradient(circle, rgba(180, 30, 30, 0.7) 0%, rgba(139, 0, 0, 0.3) 40%, transparent 70%); border-radius: 50%; filter: blur(80px); pointer-events: none; z-index: 0; animation: float-red 8s ease-in-out infinite; }
+        @keyframes float-red { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(-30px); } }
 
+        /* Карточки */
+        .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 28px; position: relative; z-index: 10; }
+        .glass-panel { background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 20px; }
+        
+        .btn-primary { background: linear-gradient(135deg, #B41E1E 0%, #700000 100%); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 15px 50px rgba(180, 30, 30, 0.5); }
+        
+        .progress-container { background: rgba(255, 255, 255, 0.05); border-radius: 100px; overflow: hidden; }
+        .progress-fill { background: linear-gradient(90deg, #B41E1E 0%, #E04040 100%); border-radius: 100px; transition: width 1.5s ease; }
+
+        .input-glass { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: white; border-radius: 12px; }
+        
+        .section { display: none; width: 100%; min-height: 100vh; flex-direction: column; justify-content: center; align-items: center; padding: 24px; }
+        .section.active { display: flex; }
+
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(15px); display: none; justify-content: center; align-items: center; z-index: 100; }
+        .modal-overlay.active { display: flex; }
+    </style>
+</head>
+<body>
+    <div class="sphere-red"></div>
+
+    <section id="welcome" class="section active">
+        <div class="glass-card px-8 py-10 text-center max-w-lg w-full">
+            <h1 class="text-4xl font-bold mb-2">БЛАГО <span class="arabic-font text-white/90">| الخير</span></h1>
+            <p class="text-xs text-white/40 tracking-[0.3em] uppercase mb-6">project zero five</p>
+            
+            <div class="glass-panel p-4 mb-6 grid grid-cols-2 gap-4">
+                <div>
+                    <p class="text-3xl font-bold text-red-500" id="totalRaised">0</p>
+                    <p class="text-[10px] text-white/50 uppercase">собрано (₽)</p>
+                </div>
+                <div>
+                    <p class="text-3xl font-bold text-red-500" id="peopleFed">0</p>
+                    <p class="text-[10px] text-white/50 uppercase">накормлено</p>
+                </div>
+            </div>
+
+            <div class="mb-6 text-left">
+                <div class="flex justify-between text-xs mb-2 text-white/60">
+                    <span>Цель: 1,000,000 ₽</span>
+                    <span id="progressPercent">0%</span>
+                </div>
+                <div class="progress-container h-2">
+                    <div id="progressBar" class="progress-fill h-full" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <button onclick="showSection('transfer')" class="btn-primary w-full py-4 rounded-full font-bold text-lg mb-4">ПОДДЕРЖАТЬ</button>
+        </div>
+    </section>
+
+    <section id="transfer" class="section">
+        <div class="glass-card p-8 max-w-md w-full">
+            <h2 class="text-2xl font-bold mb-6 text-center">Реквизиты</h2>
+            <div class="glass-panel p-4 mb-6 cursor-pointer" onclick="copyCard()">
+                <p class="text-xs text-white/40 mb-1">Нажми, чтобы скопировать карту</p>
+                <p class="text-xl font-mono tracking-widest">2200 7019 7567 8803</p>
+                <p id="copyStatus" class="text-green-500 text-xs mt-2 hidden">Скопировано!</p>
+            </div>
+            <button onclick="showModal()" class="btn-primary w-full py-4 rounded-full font-bold mb-4">Я СДЕЛАЛ ПЕРЕВОД</button>
+            <button onclick="showSection('welcome')" class="text-white/40 text-sm">← Назад</button>
+        </div>
+    </section>
+
+    <section id="adminLogin" class="section">
+        <div class="glass-card p-8 max-w-sm w-full text-center">
+            <h2 class="text-xl font-bold mb-4">Доступ для Layth_Berzloy</h2>
+            <input type="password" id="passInput" placeholder="Пароль" class="input-glass w-full p-4 mb-4 text-center">
+            <button onclick="checkPass()" class="btn-primary w-full py-3 rounded-xl mb-4">Войти</button>
+            <button onclick="showSection('welcome')" class="text-white/40 text-sm">Отмена</button>
+        </div>
+    </section>
+
+    <section id="adminPanel" class="section">
+        <div class="glass-card p-6 max-w-lg w-full">
+            <h2 class="text-xl font-bold mb-4">Управление проектом</h2>
+            <div class="space-y-3 mb-6">
+                <input type="text" id="donorName" placeholder="Имя (например: Брат)" class="input-glass w-full p-3 text-sm">
+                <input type="number" id="donorAmount" placeholder="Сумма (₽)" class="input-glass w-full p-3 text-sm">
+                <button onclick="addNewDonation()" class="btn-primary w-full py-3 rounded-xl font-bold">+ Добавить взнос</button>
+            </div>
+            <div id="adminList" class="glass-panel p-4 max-h-64 overflow-y-auto space-y-2 text-sm">
+                </div>
+            <button onclick="showSection('welcome')" class="w-full mt-4 text-white/40 py-2">Выйти на сайт</button>
+        </div>
+    </section>
+
+    <div id="modal" class="modal-overlay" onclick="this.classList.remove('active')">
+        <div class="glass-card p-10 text-center mx-4">
+            <h3 class="text-2xl font-bold mb-2">Принято!</h3>
+            <p class="text-white/60">Ваш вклад будет добавлен после проверки</p>
+        </div>
+    </div>
+
+    <footer class="fixed bottom-0 w-full py-6 text-center">
+        <a href="https://instagram.com/blago.project05" class="text-white/40 text-sm block mb-2">@blago.project05</a>
+        <button onclick="showSection('adminLogin')" class="text-[10px] text-white/10 tracking-[0.4em] uppercase hover:text-white/40 transition-all">
+            Вход для администратора
+        </button>
+    </footer>
+
+    <script>
+        const MY_PASS = 'FBI002KOLA';
+        const GOAL = 1000000;
+        let data = JSON.parse(localStorage.getItem('blago_data')) || [];
+
+        function showSection(id) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            if(id === 'adminPanel') renderAdminList();
+            updateStats();
+        }
+
+        function checkPass() {
+            if(document.getElementById('passInput').value === MY_PASS) {
+                showSection('adminPanel');
+            } else {
+                alert('Неверный пароль');
+            }
+        }
+
+        function addNewDonation() {
+            const name = document.getElementById('donorName').value;
+            const amount = parseInt(document.getElementById('donorAmount').value);
+            if(name && amount) {
+                data.unshift({ id: Date.now(), name, amount });
+                localStorage.setItem('blago_data', JSON.stringify(data));
+                renderAdminList();
+                updateStats();
+                document.getElementById('donorName').value = '';
+                document.getElementById('donorAmount').value = '';
+            }
+        }
+
+        function deleteItem(id) {
+            data = data.filter(i => i.id !== id);
+            localStorage.setItem('blago_data', JSON.stringify(data));
+            renderAdminList();
+            updateStats();
+        }
+
+        function renderAdminList() {
+            const container = document.getElementById('adminList');
+            container.innerHTML = data.map(i => `
+                <div class="flex justify-between items-center border-b border-white/5 pb-2">
+                    <span>${i.name}: <b>${i.amount}₽</b></span>
+                    <button onclick="deleteItem(${i.id})" class="text-red-500 ml-4">✕</button>
+                </div>
+            `).join('');
+        }
+
+        function updateStats() {
+            const total = data.reduce((sum, i) => sum + i.amount, 0);
+            const people = Math.floor(total / 100);
+            const percent = Math.min(100, Math.floor((total / GOAL) * 100));
+
+            document.getElementById('totalRaised').innerText = total.toLocaleString();
+            document.getElementById('peopleFed').innerText = people.toLocaleString();
+            document.getElementById('progressPercent').innerText = percent + '%';
+            document.getElementById('progressBar').style.width = percent + '%';
+        }
+
+        function copyCard() {
+            navigator.clipboard.writeText('2200 7019 7567 8803');
+            document.getElementById('copyStatus').classList.remove('hidden');
+            setTimeout(() => document.getElementById('copyStatus').classList.add('hidden'), 2000);
+        }
+
+        function showModal() { document.getElementById('modal').classList.add('active'); }
+
+        window.onload = updateStats;
+    </script>
+</body>
+</html>
