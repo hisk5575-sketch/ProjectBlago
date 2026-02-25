@@ -3,215 +3,257 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>БЛАГО | Рамадан 2026</title>
+    <title>BLAGO • 2026</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;500;700;800&family=Noto+Sans+Arabic:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;500;700;800&display=swap" rel="stylesheet">
     <style>
         :root { --brand: #ff3b3b; --gold: #d4af37; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-font-smoothing: antialiased; user-select: none; }
-        body { background: #000; color: #fff; height: 100vh; width: 100vw; overflow: hidden; position: fixed; }
+        * { 
+            margin: 0; padding: 0; box-sizing: border-box; 
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            user-select: none;
+        }
 
-        .app-bg { position: fixed; inset: 0; z-index: -1; background: #000; }
-        .bg-glow { position: absolute; width: 140vw; height: 100vh; top: -40%; left: -20%; background: radial-gradient(circle at center, #3a0808 0%, transparent 60%); filter: blur(60px); animation: pulse 10s infinite alternate; }
-        @keyframes pulse { from { opacity: 0.5; transform: scale(1); } to { opacity: 0.8; transform: scale(1.1); } }
+        body { 
+            background: #000; color: #fff; 
+            height: 100vh; width: 100vw; 
+            overflow: hidden; position: fixed;
+        }
 
-        .glass-panel { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border: 1px solid rgba(255, 255, 255, 0.07); border-radius: 28px; }
-        .ios-btn { background: #fff; color: #000; border-radius: 20px; font-weight: 800; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; justify-content: center; }
-        .ios-btn:active { transform: scale(0.94); }
+        /* Ультра-современный живой фон */
+        .app-bg {
+            position: fixed; inset: 0; z-index: -1;
+            background: #000;
+        }
+        .bg-glow {
+            position: absolute; width: 150vw; height: 100vh;
+            top: -50%; left: -25%;
+            background: radial-gradient(circle at center, #300 0%, transparent 50%);
+            filter: blur(80px);
+            animation: drift 15s infinite alternate ease-in-out;
+        }
+        @keyframes drift { from { transform: translate(-10%, -10%) scale(1); } to { transform: translate(10%, 10%) scale(1.1); } }
 
-        .progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #d4af37, #ff3b3b); box-shadow: 0 0 15px rgba(212, 175, 55, 0.3); transition: width 2s cubic-bezier(0.65, 0, 0.35, 1); }
-        .section { position: absolute; inset: 0; padding: env(safe-area-inset-top) 20px env(safe-area-inset-bottom); display: none; flex-direction: column; overflow-y: auto; }
-        .section.active { display: flex; animation: fadeIn 0.6s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* Контейнер приложения */
+        .app-shell {
+            height: 100%; display: flex; flex-direction: column;
+            padding: env(safe-area-inset-top) 24px env(safe-area-inset-bottom);
+        }
 
-        .recent-donor { animation: slideIn 0.5s ease-out; }
-        @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
-        
-        input { background: rgba(255,255,255,0.05) !important; border: 1px solid rgba(255,255,255,0.1) !important; color: #fff !important; width: 100%; padding: 18px; border-radius: 18px; outline: none; }
+        /* Стекло */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(40px) saturate(1.5);
+            -webkit-backdrop-filter: blur(40px) saturate(1.5);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 32px;
+        }
+
+        /* Кнопки в стиле iOS */
+        .ios-btn {
+            background: #fff; color: #000;
+            border-radius: 24px; font-weight: 700;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .ios-btn:active { transform: scale(0.92); opacity: 0.8; }
+
+        .ios-btn-secondary {
+            background: rgba(255,255,255,0.05); color: #fff;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* Секции */
+        .page { 
+            position: absolute; inset: 0; padding: inherit;
+            display: none; flex-direction: column; opacity: 0;
+            transform: scale(1.05); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .page.active { display: flex; opacity: 1; transform: scale(1); }
+
+        /* Прогресс-бар */
+        .progress-track { height: 8px; background: rgba(255,255,255,0.05); border-radius: 100px; overflow: hidden; }
+        .progress-bar { 
+            height: 100%; width: 0%; background: linear-gradient(90deg, #600, var(--brand));
+            box-shadow: 0 0 20px rgba(255, 59, 59, 0.4);
+            transition: width 2s cubic-bezier(0.65, 0, 0.35, 1);
+        }
+
+        input {
+            background: rgba(255,255,255,0.05) !important; border: 1px solid rgba(255,255,255,0.1) !important;
+            color: #fff !important; width: 100%; padding: 20px; border-radius: 20px; outline: none; font-size: 16px;
+        }
+
+        .shimmer {
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+            background-size: 200% 100%; animation: shimmer 2s infinite;
+        }
+        @keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
     </style>
 </head>
 <body>
     <div class="app-bg"><div class="bg-glow"></div></div>
 
-    <section id="main" class="section active">
-        <div class="pt-10 text-center mb-8">
-            <h1 id="adminTrigger" class="text-6xl font-extrabold tracking-tighter mb-1 italic">БЛАГО</h1>
-            <p class="text-white/20 text-[10px] tracking-[0.5em] uppercase font-bold">Рамадан Карим 2026</p>
-        </div>
-
-        <div class="glass-panel p-5 mb-6 text-center italic border-white/10">
-            <p class="Noto Sans Arabic text-gold text-lg mb-2">«Принимайте участие в добре...»</p>
-            <p class="text-[10px] text-white/40 leading-relaxed uppercase tracking-widest">Твоя милостыня сегодня — <br> это чья-то надежда завтра</p>
-        </div>
-
-        <div class="grid grid-cols-2 gap-3 mb-3">
-            <div class="glass-panel p-5">
-                <p class="text-[9px] uppercase text-white/30 font-bold mb-1 tracking-widest">Собрано</p>
-                <p class="text-2xl font-bold" id="totalRaised">0 ₽</p>
-            </div>
-            <div class="glass-panel p-5">
-                <p class="text-[9px] uppercase text-white/30 font-bold mb-1 tracking-widest">Порций еды</p>
-                <p class="text-2xl font-bold" id="totalFed">0</p>
-            </div>
-        </div>
-
-        <div class="glass-panel p-6 mb-6">
-            <div class="flex justify-between items-end mb-3">
-                <span class="text-[9px] font-bold text-white/30 uppercase tracking-[0.2em]">До цели проекта</span>
-                <span class="text-2xl font-black text-gold" id="percentText">0%</span>
-            </div>
-            <div class="h-2 bg-white/5 rounded-full overflow-hidden">
-                <div id="progressBar" class="progress-bar"></div>
-            </div>
-        </div>
-
-        <div class="mb-8">
-            <p class="text-[9px] uppercase text-white/20 font-bold mb-4 tracking-widest ml-1 text-center">Последние благодеяния</p>
-            <div id="donorWall" class="space-y-2 h-24 overflow-hidden relative">
-                <div class="text-center text-[10px] text-white/10 mt-4 uppercase tracking-widest">Будь первым в списке добра</div>
-            </div>
-        </div>
-
-        <div class="mt-auto pb-10 space-y-3">
-            <button onclick="nav('pay')" class="ios-btn w-full py-6 text-sm uppercase tracking-[0.2em]">Помочь накормить</button>
-            <a href="https://instagram.com/blago.project05" target="_blank" class="ios-btn bg-white/5 text-white/60 border border-white/10 w-full py-4 text-[9px] uppercase tracking-widest">Наш Instagram</a>
-        </div>
-    </section>
-
-    <section id="pay" class="section">
-        <div class="flex-1 flex flex-col justify-center">
-            <div class="glass-panel p-8 text-center">
-                <h3 class="text-lg font-bold mb-8 tracking-tight">Реквизиты фонда</h3>
-                
-                <div onclick="copyCard()" class="bg-black/40 rounded-3xl p-8 border border-white/5 mb-8 active:scale-95 transition-all">
-                    <p class="text-[8px] text-white/20 font-bold uppercase mb-4 tracking-widest">Перевод на карту</p>
-                    <p class="text-2xl font-bold tracking-widest text-white">2200 7019 7567 8803</p>
-                    <p id="copyStatus" class="text-[9px] text-gold mt-4 font-bold opacity-0">СКОПИРОВАНО В БУФЕР</p>
+    <div class="app-shell">
+        <section id="main" class="page active">
+            <div class="flex-1 flex flex-col justify-center">
+                <div class="text-center mb-12">
+                    <p class="text-[10px] tracking-[0.8em] text-white/30 uppercase font-bold mb-4">Ramadan Humanitarian Aid</p>
+                    <h1 id="adminTrigger" class="text-7xl font-extrabold tracking-tighter mb-2 transition-all active:scale-95">БЛАГО</h1>
+                    <p class="text-white/10 text-xl tracking-widest uppercase font-light">Project 05</p>
                 </div>
 
-                <div class="space-y-4 mb-8">
-                    <div class="flex items-center gap-3 text-left p-4 glass-panel border-white/5">
-                        <span class="text-xl">🍲</span>
-                        <p class="text-[10px] text-white/60 leading-tight uppercase font-bold">100 ₽ — полноценный горячий <br>ифтар для одного человека</p>
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div class="glass-panel p-6">
+                        <p class="text-[10px] uppercase text-white/20 font-bold mb-1">Собрано</p>
+                        <p class="text-3xl font-bold tracking-tight" id="raisedVal">0 ₽</p>
+                    </div>
+                    <div class="glass-panel p-6">
+                        <p class="text-[10px] uppercase text-white/20 font-bold mb-1">Накормлено</p>
+                        <p class="text-3xl font-bold tracking-tight" id="fedVal">0</p>
                     </div>
                 </div>
 
-                <button onclick="confirmPay()" class="ios-btn w-full py-5 text-[10px] uppercase tracking-widest mb-6">Я сделал перевод</button>
-                <button onclick="nav('main')" class="text-[9px] text-white/20 font-bold uppercase tracking-widest">Вернуться</button>
-            </div>
-        </div>
-    </section>
-
-    <section id="admin" class="section">
-        <div class="pt-10">
-            <div class="flex justify-between items-center mb-10">
-                <h2 class="text-xl font-bold">Админ панель</h2>
-                <button onclick="nav('main')" class="text-white/20">✕</button>
-            </div>
-            
-            <div class="space-y-4 mb-10">
-                <input type="text" id="adminName" placeholder="Имя донора (например: Ахмад)">
-                <input type="number" id="adminSum" placeholder="Сумма пожертвования">
-                <button onclick="addDonation()" class="ios-btn w-full py-5 text-xs uppercase font-bold">Обновить данные</button>
+                <div class="glass-panel p-8">
+                    <div class="flex justify-between items-end mb-4">
+                        <span class="text-[10px] font-bold text-white/30 uppercase tracking-widest">Прогресс цели</span>
+                        <span class="text-3xl font-extrabold" id="percentVal">0%</span>
+                    </div>
+                    <div class="progress-track mb-2">
+                        <div id="barVal" class="progress-bar"></div>
+                    </div>
+                    <div class="flex justify-between text-[10px] text-white/20 font-bold uppercase">
+                        <span>Старт: 0</span>
+                        <span>Цель: 100,000</span>
+                    </div>
+                </div>
             </div>
 
-            <div id="adminList" class="space-y-3 overflow-y-auto max-h-[400px]"></div>
-        </div>
-    </section>
+            <div class="pb-10 space-y-4">
+                <button onclick="nav('pay')" class="ios-btn w-full py-6 text-sm uppercase tracking-widest shadow-2xl shadow-white/5">Внести вклад</button>
+                <a href="https://instagram.com/blago.project05" target="_blank" class="ios-btn ios-btn-secondary w-full py-5 text-[10px] uppercase tracking-widest">Instagram</a>
+            </div>
+        </section>
 
-    <div id="success" class="fixed inset-0 bg-black/98 backdrop-blur-3xl hidden items-center justify-center z-50 p-10 text-center" onclick="this.style.display='none'">
-        <div class="recent-donor">
+        <section id="pay" class="page">
+            <div class="flex-1 flex flex-col justify-center">
+                <div class="glass-panel p-10 text-center">
+                    <div class="w-16 h-1 w-full bg-white/10 rounded-full mb-10 mx-auto"></div>
+                    <h3 class="text-xl font-bold mb-10 tracking-tight">Реквизиты фонда</h3>
+                    
+                    <div onclick="copy()" class="bg-black/40 rounded-3xl p-8 border border-white/5 mb-8 transition-transform active:scale-95">
+                        <p class="text-[9px] text-white/20 font-bold uppercase mb-4 tracking-widest">Карта для перевода</p>
+                        <p class="text-2xl font-bold tracking-[0.2em] text-white">2200 7019 7567 8803</p>
+                        <p id="copyStatus" class="text-[10px] text-green-500 mt-4 font-bold opacity-0 transition-opacity">СКОПИРОВАНО</p>
+                    </div>
+
+                    <button onclick="thanks()" class="ios-btn ios-btn-secondary w-full py-5 text-[10px] uppercase tracking-widest mb-6">Я подтверждаю перевод</button>
+                    <button onclick="nav('main')" class="text-xs text-white/20 font-bold uppercase">Вернуться назад</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="admin" class="page">
+            <div class="flex-1 flex flex-col pt-10">
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-xl font-bold tracking-tight">Панель управления</h2>
+                    <button onclick="nav('main')" class="w-10 h-10 glass-panel flex items-center justify-center font-bold">✕</button>
+                </div>
+                
+                <div class="space-y-4 mb-10">
+                    <input type="text" id="dName" placeholder="Имя донора">
+                    <input type="number" id="dSum" placeholder="Сумма (₽)">
+                    <button onclick="add()" class="ios-btn w-full py-5 text-xs uppercase tracking-widest">Добавить данные</button>
+                </div>
+
+                <div id="list" class="space-y-3 overflow-y-auto max-h-[400px] pr-2"></div>
+            </div>
+        </section>
+    </div>
+
+    <div id="success" class="fixed inset-0 bg-black/98 backdrop-blur-3xl hidden items-center justify-center z-50 transition-all p-10 text-center" onclick="this.style.display='none'">
+        <div>
             <div class="text-6xl mb-6">🌙</div>
-            <h2 class="text-4xl font-extrabold italic mb-4 tracking-tighter uppercase">Да примет Аллах</h2>
-            <p class="text-white/20 uppercase tracking-[0.3em] text-[10px]">Ваше пожертвование зачтено</p>
+            <h2 class="text-5xl font-extrabold italic mb-4 tracking-tighter leading-tight">JAZAKALLAH<br>KHAYRAN</h2>
+            <p class="text-white/20 uppercase tracking-[0.3em] text-[10px]">Ваше добро вернется к вам</p>
         </div>
     </div>
 
     <script>
-        const PASS = 'FBI002KOLA';
-        const GOAL = 100000;
-        let donations = JSON.parse(localStorage.getItem('blago_psych_v1')) || [];
+        const P_KEY = 'FBI002KOLA';
+        const TARGET = 100000;
+        let store = JSON.parse(localStorage.getItem('blago_2026_final')) || [];
 
-        // Секретный вход: удерживай "БЛАГО"
+        // Секретный вход: удерживай "БЛАГО" 2 секунды
         let timer;
-        document.getElementById('adminTrigger').addEventListener('touchstart', () => {
-            timer = setTimeout(() => {
-                const p = prompt('KEY:');
-                if(p === PASS) nav('admin');
-            }, 2000);
-        });
-        document.getElementById('adminTrigger').addEventListener('touchend', () => clearTimeout(timer));
+        const trigger = document.getElementById('adminTrigger');
+        trigger.addEventListener('touchstart', () => { timer = setTimeout(() => {
+            const p = prompt('SECRET ACCESS:');
+            if(p === P_KEY) nav('admin');
+        }, 2000); });
+        trigger.addEventListener('touchend', () => clearTimeout(timer));
 
         function nav(id) {
-            document.querySelectorAll('.section').forEach(p => p.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            if(id === 'admin') drawAdmin();
-            if(id === 'main') drawWall();
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            setTimeout(() => {
+                document.getElementById(id).classList.add('active');
+                if(id === 'admin') drawList();
+            }, 50);
             update();
         }
 
-        function addDonation() {
-            const n = document.getElementById('adminName').value;
-            const s = parseInt(document.getElementById('adminSum').value);
+        function add() {
+            const n = document.getElementById('dName').value;
+            const s = parseInt(document.getElementById('dSum').value);
             if(n && s) {
-                donations.unshift({ id: Date.now(), n, s });
-                localStorage.setItem('blago_psych_v1', JSON.stringify(donations));
-                document.getElementById('adminName').value = '';
-                document.getElementById('adminSum').value = '';
-                drawAdmin();
+                store.unshift({ id: Date.now(), n, s });
+                localStorage.setItem('blago_2026_final', JSON.stringify(store));
+                document.getElementById('dName').value = '';
+                document.getElementById('dSum').value = '';
+                drawList();
                 update();
-                drawWall();
             }
         }
 
-        function deleteDonation(id) {
-            donations = donations.filter(d => d.id !== id);
-            localStorage.setItem('blago_psych_v1', JSON.stringify(donations));
-            drawAdmin();
+        function del(id) {
+            store = store.filter(i => i.id !== id);
+            localStorage.setItem('blago_2026_final', JSON.stringify(store));
+            drawList();
             update();
         }
 
-        function drawWall() {
-            const wall = document.getElementById('donorWall');
-            if(donations.length === 0) return;
-            wall.innerHTML = donations.slice(0, 3).map(d => `
-                <div class="glass-panel py-2 px-4 text-center border-white/5 recent-donor">
-                    <p class="text-[10px] font-bold text-white/50 uppercase tracking-tighter">
-                        ${d.n} <span class="text-gold mx-2">пожертвовал</span> ${d.s} ₽
-                    </p>
-                </div>
-            `).join('');
-        }
-
-        function drawAdmin() {
-            document.getElementById('adminList').innerHTML = donations.map(d => `
-                <div class="glass-panel p-4 flex justify-between items-center mb-2">
-                    <p class="text-xs font-bold">${d.n}: ${d.s} ₽</p>
-                    <button onclick="deleteDonation(${d.id})" class="text-red-500 font-bold">✕</button>
+        function drawList() {
+            document.getElementById('list').innerHTML = store.map(i => `
+                <div class="glass-panel p-5 flex justify-between items-center border-white/5">
+                    <div>
+                        <p class="text-xs font-bold text-white/60 mb-1">${i.n}</p>
+                        <p class="text-lg font-bold">${i.s.toLocaleString()} ₽</p>
+                    </div>
+                    <button onclick="del(${i.id})" class="text-red-500 font-bold p-2 text-xl">✕</button>
                 </div>
             `).join('');
         }
 
         function update() {
-            const total = donations.reduce((a, b) => a + b.s, 0);
-            const perc = Math.min(100, Math.floor((total / GOAL) * 100));
-            document.getElementById('totalRaised').innerText = total.toLocaleString() + ' ₽';
-            document.getElementById('totalFed').innerText = Math.floor(total / 100).toLocaleString();
-            document.getElementById('percentText').innerText = perc + '%';
-            document.getElementById('progressBar').style.width = perc + '%';
+            const total = store.reduce((a, b) => a + b.s, 0);
+            const perc = Math.min(100, Math.floor((total / TARGET) * 100));
+            document.getElementById('raisedVal').innerText = total.toLocaleString() + ' ₽';
+            document.getElementById('fedVal').innerText = Math.floor(total / 100).toLocaleString();
+            document.getElementById('percentVal').innerText = perc + '%';
+            document.getElementById('barVal').style.width = perc + '%';
         }
 
-        function copyCard() {
+        function copy() {
             navigator.clipboard.writeText('2200 7019 7567 8803');
             const s = document.getElementById('copyStatus');
             s.style.opacity = '1';
             setTimeout(() => s.style.opacity = '0', 2000);
         }
 
-        function confirmPay() { document.getElementById('success').style.display = 'flex'; }
+        function thanks() { document.getElementById('success').style.display = 'flex'; }
 
         update();
-        drawWall();
     </script>
 </body>
 </html>
