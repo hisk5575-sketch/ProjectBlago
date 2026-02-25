@@ -1,302 +1,152 @@
-
-# Создаём index.html - главный файл
-html_content = '''<!DOCTYPE html>
-<html lang="ru" dir="ltr">
+<!DOCTYPE html>
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#1a0a0f">
-    <title>خير | Благо Рамадан 2025</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Noto+Naskh+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>خير | Благо</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&family=Cormorant+Garamond:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --gold: #D4AF37;
-            --gold-light: #F4E8C1;
-            --gold-dark: #B8941F;
-            --burgundy: #2D0A0F;
-            --burgundy-light: #4A151C;
-            --black: #0D0406;
-            --white: #FAF8F3;
-            --cream: #F5F0E8;
-        }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
+            user-select: none;
         }
 
         body {
             font-family: 'Cormorant Garamond', serif;
-            background: var(--black);
-            color: var(--white);
-            overflow-x: hidden;
+            background: #0a0508;
+            color: #faf8f3;
             min-height: 100vh;
+            overflow-x: hidden;
             position: relative;
         }
 
-        /* Animated Background */
-        .universe {
+        /* Падающие звезды и полумесяцы */
+        .snow-container {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             pointer-events: none;
-            z-index: 0;
+            z-index: 1;
             overflow: hidden;
         }
 
-        .star {
+        .star-fall, .crescent-fall {
             position: absolute;
-            background: linear-gradient(135deg, var(--gold-light), var(--gold));
-            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-            animation: fall linear infinite, twinkle 3s ease-in-out infinite;
+            top: -50px;
+            animation: fall linear infinite;
             opacity: 0.8;
         }
 
-        .crescent {
-            position: absolute;
-            width: 20px;
-            height: 20px;
+        .star-fall {
+            width: 12px;
+            height: 12px;
+            background: linear-gradient(135deg, #f4e8c1, #d4af37);
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+        }
+
+        .crescent-fall {
+            width: 16px;
+            height: 16px;
             border-radius: 50%;
-            box-shadow: -4px 2px 0 2px var(--gold);
-            animation: fall linear infinite, rotate 10s linear infinite;
-            opacity: 0.6;
+            box-shadow: -3px 2px 0 2px #d4af37;
         }
 
         @keyframes fall {
-            0% {
-                transform: translateY(-100px) rotate(0deg);
-                opacity: 0;
-            }
-            10% {
-                opacity: 0.8;
-            }
-            90% {
-                opacity: 0.8;
-            }
-            100% {
+            to {
                 transform: translateY(100vh) rotate(360deg);
                 opacity: 0;
             }
         }
 
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.4; transform: scale(0.8); }
-            50% { opacity: 1; transform: scale(1.2); }
-        }
-
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        /* Glassmorphism Container */
+        /* Главный контейнер */
         .container {
             position: relative;
             z-index: 10;
             max-width: 480px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 40px 20px;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
-        /* Header */
+        /* Заголовок с секретом */
         .header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
             position: relative;
         }
 
         .arabic-title {
             font-family: 'Noto Naskh Arabic', serif;
-            font-size: 4rem;
+            font-size: 5rem;
             font-weight: 700;
-            background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 50%, var(--gold-dark) 100%);
+            background: linear-gradient(135deg, #f4e8c1, #d4af37, #b8941f);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            text-shadow: 0 0 40px rgba(212, 175, 55, 0.3);
-            margin-bottom: 10px;
             cursor: pointer;
-            user-select: none;
-            transition: transform 0.3s ease;
             position: relative;
             display: inline-block;
+            transition: transform 0.3s;
         }
 
         .arabic-title:active {
             transform: scale(0.95);
         }
 
-        .arabic-title::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60%;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--gold), transparent);
-        }
-
         .subtitle {
-            font-size: 1.3rem;
-            color: var(--gold-light);
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            font-weight: 300;
+            font-size: 1.4rem;
+            color: #d4af37;
+            letter-spacing: 4px;
+            margin-top: 10px;
         }
 
         .location {
-            margin-top: 10px;
+            margin-top: 15px;
             font-size: 1rem;
-            color: rgba(250, 248, 243, 0.6);
-            font-style: italic;
+            color: rgba(250, 248, 243, 0.5);
         }
 
-        /* Main Moon - Clickable for Admin */
-        .moon-container {
-            position: relative;
-            width: 200px;
-            height: 200px;
-            margin: 20px 0;
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .moon {
+        /* Прогресс */
+        .progress-box {
             width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--burgundy-light) 0%, var(--burgundy) 100%);
-            box-shadow: 
-                inset -20px -20px 40px rgba(0,0,0,0.5),
-                0 0 60px rgba(212, 175, 55, 0.2),
-                0 0 100px rgba(212, 175, 55, 0.1);
-            position: relative;
-            overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .moon::before {
-            content: '';
-            position: absolute;
-            top: -10%;
-            right: -10%;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: var(--black);
-            box-shadow: -10px 5px 20px rgba(0,0,0,0.8);
-        }
-
-        .moon.glow {
-            box-shadow: 
-                inset -20px -20px 40px rgba(0,0,0,0.5),
-                0 0 80px rgba(212, 175, 55, 0.6),
-                0 0 120px rgba(212, 175, 55, 0.4);
-            transform: scale(1.05);
-        }
-
-        .moon-text {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-family: 'Noto Naskh Arabic', serif;
-            font-size: 3rem;
-            color: var(--gold);
-            z-index: 10;
-            opacity: 0.3;
-            pointer-events: none;
-        }
-
-        .click-indicator {
-            position: absolute;
-            bottom: -30px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 0.8rem;
-            color: rgba(212, 175, 55, 0.4);
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .moon-container:hover .click-indicator {
-            opacity: 1;
-        }
-
-        /* Progress Section */
-        .progress-section {
-            width: 100%;
-            background: rgba(45, 10, 15, 0.6);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            border-radius: 24px;
+            background: rgba(45, 10, 15, 0.8);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 20px;
             padding: 25px;
-            margin-bottom: 25px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
         }
 
         .progress-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
             margin-bottom: 15px;
-        }
-
-        .progress-label {
             font-size: 0.9rem;
-            color: var(--gold-light);
-            text-transform: uppercase;
-            letter-spacing: 2px;
+            color: #f4e8c1;
         }
 
-        .progress-amount {
-            font-size: 1.8rem;
-            font-weight: 600;
-            color: var(--gold);
-        }
-
-        .progress-bar-container {
-            height: 8px;
-            background: rgba(0,0,0,0.3);
-            border-radius: 4px;
+        .progress-bar-bg {
+            height: 10px;
+            background: rgba(0,0,0,0.4);
+            border-radius: 5px;
             overflow: hidden;
-            position: relative;
         }
 
-        .progress-bar {
+        .progress-bar-fill {
             height: 100%;
-            background: linear-gradient(90deg, var(--gold-dark), var(--gold), var(--gold-light));
-            border-radius: 4px;
-            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .progress-bar::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            animation: shimmer 2s infinite;
-        }
-
-        @keyframes shimmer {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
+            background: linear-gradient(90deg, #b8941f, #d4af37, #f4e8c1);
+            border-radius: 5px;
+            transition: width 1s ease;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
         }
 
         .progress-stats {
@@ -307,205 +157,133 @@ html_content = '''<!DOCTYPE html>
             color: rgba(250, 248, 243, 0.6);
         }
 
-        /* QR Section */
-        .qr-section {
+        /* Карта */
+        .card-box {
             width: 100%;
-            background: rgba(45, 10, 15, 0.6);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            border-radius: 24px;
+            background: linear-gradient(135deg, rgba(45, 10, 15, 0.9), rgba(20, 5, 8, 0.9));
+            border: 2px solid rgba(212, 175, 55, 0.4);
+            border-radius: 20px;
             padding: 30px;
             text-align: center;
-            margin-bottom: 25px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+            margin-bottom: 30px;
             position: relative;
             overflow: hidden;
         }
 
-        .qr-section::before {
+        .card-box::before {
             content: '';
             position: absolute;
             top: -50%;
             left: -50%;
             width: 200%;
             height: 200%;
-            background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 60%);
             animation: pulse 4s ease-in-out infinite;
         }
 
         @keyframes pulse {
-            0%, 100% { transform: scale(0.8); opacity: 0.5; }
-            50% { transform: scale(1.2); opacity: 0.8; }
+            0%, 100% { transform: scale(0.8); }
+            50% { transform: scale(1.1); }
         }
 
-        .qr-title {
-            font-size: 1.2rem;
-            color: var(--gold-light);
+        .card-label {
+            font-size: 0.9rem;
+            color: #f4e8c1;
             margin-bottom: 20px;
             position: relative;
             z-index: 1;
         }
 
-        .qr-code {
-            width: 220px;
-            height: 220px;
-            margin: 0 auto 20px;
-            background: var(--white);
-            border-radius: 16px;
-            padding: 15px;
+        .card-number {
+            font-family: 'Courier New', monospace;
+            font-size: 1.6rem;
+            letter-spacing: 3px;
+            color: #faf8f3;
+            background: rgba(0,0,0,0.4);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            cursor: pointer;
             position: relative;
             z-index: 1;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+            word-break: break-all;
         }
 
-        .qr-code img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
+        .card-number:hover {
+            border-color: #d4af37;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
         }
 
-        .qr-hint {
-            font-size: 0.9rem;
-            color: rgba(250, 248, 243, 0.7);
+        .card-number.copied {
+            background: rgba(212, 175, 55, 0.2);
+            border-color: #d4af37;
+        }
+
+        .copy-hint {
+            font-size: 0.8rem;
+            color: rgba(212, 175, 55, 0.7);
+            margin-top: 15px;
             position: relative;
             z-index: 1;
         }
 
-        .bank-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+        .bank-name {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 8px 20px;
             background: rgba(212, 175, 55, 0.1);
             border: 1px solid rgba(212, 175, 55, 0.3);
             border-radius: 20px;
-            padding: 8px 16px;
-            margin-top: 15px;
-            font-size: 0.85rem;
-            color: var(--gold);
+            font-size: 0.9rem;
+            color: #d4af37;
+            position: relative;
+            z-index: 1;
         }
 
-        /* Donors List */
-        .donors-section {
+        /* Спонсоры */
+        .donors-box {
             width: 100%;
-            background: rgba(45, 10, 15, 0.6);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            border-radius: 24px;
+            background: rgba(45, 10, 15, 0.8);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 20px;
             padding: 25px;
-            margin-bottom: 25px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-            max-height: 400px;
+            backdrop-filter: blur(10px);
+            max-height: 350px;
             overflow-y: auto;
-        }
-
-        .donors-section::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .donors-section::-webkit-scrollbar-track {
-            background: rgba(0,0,0,0.2);
-            border-radius: 3px;
-        }
-
-        .donors-section::-webkit-scrollbar-thumb {
-            background: var(--gold-dark);
-            border-radius: 3px;
-        }
-
-        .donors-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
         }
 
         .donors-title {
             font-size: 1.1rem;
-            color: var(--gold-light);
+            color: #f4e8c1;
+            margin-bottom: 20px;
+            text-align: center;
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 10px;
-        }
-
-        .donors-count {
-            background: var(--gold);
-            color: var(--black);
-            font-size: 0.75rem;
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-weight: 600;
         }
 
         .donor-item {
             display: flex;
             justify-content: space-between;
-            align-items: center;
             padding: 15px;
-            background: rgba(0,0,0,0.2);
-            border-radius: 12px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
             margin-bottom: 10px;
             border: 1px solid rgba(212, 175, 55, 0.1);
-            transition: all 0.3s ease;
-        }
-
-        .donor-item:hover {
-            background: rgba(212, 175, 55, 0.05);
-            border-color: rgba(212, 175, 55, 0.3);
-            transform: translateX(5px);
-        }
-
-        .donor-info {
-            display: flex;
-            flex-direction: column;
         }
 
         .donor-name {
-            font-size: 1rem;
-            color: var(--white);
-            font-weight: 500;
-        }
-
-        .donor-date {
-            font-size: 0.75rem;
-            color: rgba(250, 248, 243, 0.5);
-            margin-top: 4px;
+            color: #faf8f3;
         }
 
         .donor-amount {
-            font-size: 1.2rem;
-            color: var(--gold);
+            color: #d4af37;
             font-weight: 600;
         }
 
-        .loading-text {
-            text-align: center;
-            color: rgba(250, 248, 243, 0.5);
-            padding: 40px;
-            font-style: italic;
-        }
-
-        /* Footer */
-        .footer {
-            text-align: center;
-            padding: 20px;
-            color: rgba(250, 248, 243, 0.4);
-            font-size: 0.85rem;
-            margin-top: auto;
-        }
-
-        .footer-heart {
-            color: var(--gold);
-            animation: heartbeat 1.5s ease-in-out infinite;
-        }
-
-        @keyframes heartbeat {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-
-        /* Admin Modal */
+        /* Админ панель */
         .admin-modal {
             display: none;
             position: fixed;
@@ -513,8 +291,7 @@ html_content = '''<!DOCTYPE html>
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.9);
-            backdrop-filter: blur(10px);
+            background: rgba(0,0,0,0.95);
             z-index: 1000;
             justify-content: center;
             align-items: center;
@@ -525,124 +302,76 @@ html_content = '''<!DOCTYPE html>
             display: flex;
         }
 
-        .admin-container {
-            background: linear-gradient(135deg, var(--burgundy) 0%, var(--black) 100%);
-            border: 2px solid var(--gold);
-            border-radius: 24px;
-            padding: 40px;
+        .admin-content {
+            background: linear-gradient(135deg, #2d0a0f, #0a0508);
+            border: 2px solid #d4af37;
+            border-radius: 20px;
+            padding: 30px;
             width: 100%;
             max-width: 400px;
-            position: relative;
-            box-shadow: 0 0 60px rgba(212, 175, 55, 0.3);
-        }
-
-        .admin-title {
-            font-family: 'Noto Naskh Arabic', serif;
-            font-size: 2rem;
-            color: var(--gold);
             text-align: center;
-            margin-bottom: 30px;
         }
 
-        .password-input {
+        .admin-input {
             width: 100%;
-            padding: 15px 20px;
+            padding: 15px;
             background: rgba(0,0,0,0.5);
             border: 2px solid rgba(212, 175, 55, 0.3);
-            border-radius: 12px;
-            color: var(--white);
+            border-radius: 10px;
+            color: #faf8f3;
             font-size: 1rem;
-            font-family: inherit;
-            margin-bottom: 20px;
-            transition: all 0.3s;
+            margin: 20px 0;
+            text-align: center;
         }
 
-        .password-input:focus {
+        .admin-input:focus {
             outline: none;
-            border-color: var(--gold);
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+            border-color: #d4af37;
         }
 
         .admin-btn {
             width: 100%;
             padding: 15px;
-            background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+            background: linear-gradient(135deg, #b8941f, #d4af37);
             border: none;
-            border-radius: 12px;
-            color: var(--black);
+            border-radius: 10px;
+            color: #0a0508;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
-            font-family: inherit;
         }
 
-        .admin-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
-        }
-
-        .admin-btn:active {
-            transform: translateY(0);
-        }
-
-        .close-admin {
+        .admin-close {
             position: absolute;
-            top: 15px;
-            right: 15px;
+            top: 20px;
+            right: 20px;
             width: 40px;
             height: 40px;
             background: rgba(212, 175, 55, 0.1);
             border: 1px solid rgba(212, 175, 55, 0.3);
             border-radius: 50%;
-            color: var(--gold);
+            color: #d4af37;
             font-size: 1.5rem;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s;
-        }
-
-        .close-admin:hover {
-            background: rgba(212, 175, 55, 0.2);
-            transform: rotate(90deg);
-        }
-
-        .admin-panel {
-            display: none;
-            width: 100%;
-            max-width: 600px;
-            background: linear-gradient(135deg, var(--burgundy) 0%, var(--black) 100%);
-            border: 2px solid var(--gold);
-            border-radius: 24px;
-            padding: 30px;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-
-        .admin-panel.active {
-            display: block;
         }
 
         .admin-stats {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 15px;
-            margin-bottom: 25px;
+            margin: 20px 0;
         }
 
-        .stat-card {
+        .stat-item {
             background: rgba(0,0,0,0.3);
+            padding: 15px;
+            border-radius: 10px;
             border: 1px solid rgba(212, 175, 55, 0.2);
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
         }
 
         .stat-value {
-            font-size: 1.8rem;
-            color: var(--gold);
+            font-size: 1.5rem;
+            color: #d4af37;
             font-weight: 600;
         }
 
@@ -652,147 +381,76 @@ html_content = '''<!DOCTYPE html>
             margin-top: 5px;
         }
 
-        .refresh-btn {
-            width: 100%;
-            padding: 15px;
-            background: rgba(212, 175, 55, 0.1);
-            border: 2px solid var(--gold);
-            border-radius: 12px;
-            color: var(--gold);
-            font-size: 1rem;
-            cursor: pointer;
+        /* Уведомление */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: rgba(45, 10, 15, 0.95);
+            border: 1px solid #d4af37;
+            border-radius: 10px;
+            padding: 15px 30px;
+            color: #f4e8c1;
+            z-index: 2000;
+            opacity: 0;
             transition: all 0.3s;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
         }
 
-        .refresh-btn:hover {
-            background: var(--gold);
-            color: var(--black);
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
         }
 
-        .refresh-btn.spinning svg {
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        /* Success Animation */
-        .success-check {
-            display: none;
+        /* Удержание прогресс */
+        .hold-indicator {
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 100px;
-            height: 100px;
-            background: var(--gold);
+            width: 60px;
+            height: 60px;
+            border: 3px solid rgba(212, 175, 55, 0.2);
+            border-top-color: #d4af37;
             border-radius: 50%;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            animation: successPop 0.5s ease;
-        }
-
-        .success-check.active {
-            display: flex;
-        }
-
-        @keyframes successPop {
-            0% { transform: translate(-50%, -50%) scale(0); }
-            50% { transform: translate(-50%, -50%) scale(1.2); }
-            100% { transform: translate(-50%, -50%) scale(1); }
-        }
-
-        .success-check svg {
-            width: 50px;
-            height: 50px;
-            stroke: var(--black);
-            stroke-width: 3;
-            fill: none;
-            stroke-dasharray: 100;
-            stroke-dashoffset: 100;
-            animation: drawCheck 0.5s ease forwards 0.2s;
-        }
-
-        @keyframes drawCheck {
-            to { stroke-dashoffset: 0; }
-        }
-
-        /* Responsive */
-        @media (max-width: 480px) {
-            .arabic-title {
-                font-size: 3rem;
-            }
-            
-            .moon-container {
-                width: 160px;
-                height: 160px;
-            }
-            
-            .qr-code {
-                width: 180px;
-                height: 180px;
-            }
-            
-            .admin-container, .admin-panel {
-                padding: 25px;
-            }
-        }
-
-        /* Touch ripple effect */
-        .ripple {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(212, 175, 55, 0.4);
-            transform: scale(0);
-            animation: ripple 0.6s ease-out;
+            opacity: 0;
             pointer-events: none;
+            z-index: 999;
         }
 
-        @keyframes ripple {
-            to {
-                transform: scale(4);
-                opacity: 0;
-            }
+        .hold-indicator.active {
+            opacity: 1;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: translate(-50%, -50%) rotate(360deg); }
         }
     </style>
 </head>
 <body>
-    <!-- Animated Background -->
-    <div class="universe" id="universe"></div>
+    <!-- Падающие звезды -->
+    <div class="snow-container" id="snowContainer"></div>
+    
+    <!-- Индикатор удержания -->
+    <div class="hold-indicator" id="holdIndicator"></div>
 
-    <!-- Main Container -->
     <div class="container">
-        <!-- Header -->
-        <header class="header">
-            <h1 class="arabic-title" id="secretTitle">خير</h1>
-            <p class="subtitle">Благо</p>
-            <p class="location">Дербент • Рамадан 2025</p>
-        </header>
-
-        <!-- Moon (Secret Admin Entry) -->
-        <div class="moon-container" id="moonContainer">
-            <div class="moon" id="moon">
-                <span class="moon-text">☪</span>
-            </div>
-            <span class="click-indicator">Нажмите 3 раза</span>
+        <!-- Шапка с секретом -->
+        <div class="header">
+            <div class="arabic-title" id="secretTitle">خير</div>
+            <div class="subtitle">БЛАГО</div>
+            <div class="location">Дербент • Рамадан 2025</div>
         </div>
 
-        <!-- Progress Section -->
-        <div class="progress-section">
+        <!-- Прогресс -->
+        <div class="progress-box">
             <div class="progress-header">
-                <span class="progress-label">Собрано</span>
-                <span class="progress-amount" id="currentAmount">0 ₽</span>
+                <span>Собрано</span>
+                <span id="currentAmount">0 ₽</span>
             </div>
-            <div class="progress-bar-container">
-                <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progressBar" style="width: 0%"></div>
             </div>
             <div class="progress-stats">
                 <span>Цель: 100 000 ₽</span>
@@ -800,409 +458,243 @@ html_content = '''<!DOCTYPE html>
             </div>
         </div>
 
-        <!-- QR Code Section -->
-        <div class="qr-section">
-            <h3 class="qr-title">Отсканируйте для перевода</h3>
-            <div class="qr-code">
-                <img src="qr-code.png" alt="QR Code для перевода" id="qrImage">
+        <!-- Номер карты -->
+        <div class="card-box">
+            <div class="card-label">Нажмите чтобы скопировать номер карты</div>
+            <div class="card-number" id="cardNumber" data-card="2200701975678803">
+                2200 7019 7567 8803
             </div>
-            <p class="qr-hint">Или переведите через Т-Банк по номеру договора</p>
-            <div class="bank-badge">
-                <span>🏦</span>
-                <span>Т-Банк • 8200967336</span>
-            </div>
+            <div class="copy-hint" id="copyHint">Т-Банк • Нажмите для копирования</div>
+            <div class="bank-name">💳 Перевод по номеру карты</div>
         </div>
 
-        <!-- Donors List -->
-        <div class="donors-section" id="donorsSection">
-            <div class="donors-header">
-                <span class="donors-title">
-                    <span>✨</span>
-                    Последние спонсоры
-                </span>
-                <span class="donors-count" id="donorsCount">0</span>
+        <!-- Спонсоры -->
+        <div class="donors-box">
+            <div class="donors-title">
+                <span>☪</span>
+                <span>Последние спонсоры</span>
+                <span id="donorsCount" style="background: #d4af37; color: #0a0508; padding: 2px 8px; border-radius: 10px; font-size: 0.8rem;">0</span>
             </div>
             <div id="donorsList">
-                <div class="loading-text">Загрузка данных...</div>
+                <div style="text-align: center; color: rgba(250,248,243,0.5); padding: 20px;">Загрузка...</div>
             </div>
         </div>
-
-        <!-- Footer -->
-        <footer class="footer">
-            <p>Сделано с <span class="footer-heart">❤</span> для уммы</p>
-            <p style="margin-top: 5px; font-size: 0.75rem;">Данные обновляются каждые 2 минуты</p>
-        </footer>
     </div>
 
-    <!-- Admin Modal -->
+    <!-- Админ панель -->
     <div class="admin-modal" id="adminModal">
-        <!-- Login Form -->
-        <div class="admin-container" id="loginForm">
-            <button class="close-admin" id="closeAdmin">×</button>
-            <h2 class="admin-title">خير</h2>
-            <input type="password" class="password-input" id="passwordInput" placeholder="Введите пароль...">
+        <button class="admin-close" id="closeAdmin">×</button>
+        <div class="admin-content" id="loginContent">
+            <h2 style="color: #d4af37; font-family: 'Noto Naskh Arabic', serif; font-size: 2rem; margin-bottom: 10px;">خير</h2>
+            <p style="color: rgba(250,248,243,0.6); margin-bottom: 20px;">Введите пароль</p>
+            <input type="password" class="admin-input" id="adminPass" placeholder="••••••••">
             <button class="admin-btn" id="loginBtn">Войти</button>
         </div>
-
-        <!-- Admin Panel -->
-        <div class="admin-panel" id="adminPanel">
-            <button class="close-admin" id="closePanel">×</button>
-            <h2 class="admin-title">Панель управления</h2>
-            
+        
+        <div class="admin-content" id="panelContent" style="display: none;">
+            <h2 style="color: #d4af37; margin-bottom: 20px;">Панель управления</h2>
             <div class="admin-stats">
-                <div class="stat-card">
-                    <div class="stat-value" id="adminTotal">0 ₽</div>
-                    <div class="stat-label">Всего собрано</div>
+                <div class="stat-item">
+                    <div class="stat-value" id="statTotal">0</div>
+                    <div class="stat-label">Собрано</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="adminCount">0</div>
+                <div class="stat-item">
+                    <div class="stat-value" id="statCount">0</div>
                     <div class="stat-label">Спонсоров</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="adminLeft">100K</div>
+                <div class="stat-item">
+                    <div class="stat-value" id="statLeft">100K</div>
                     <div class="stat-label">Осталось</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="adminPercent">0%</div>
-                    <div class="stat-label">Выполнено</div>
+                <div class="stat-item">
+                    <div class="stat-value" id="statPercent">0%</div>
+                    <div class="stat-label">Готово</div>
                 </div>
             </div>
-
-            <button class="refresh-btn" id="refreshBtn">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="23 4 23 10 17 10"></polyline>
-                    <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
-                </svg>
-                Обновить данные
-            </button>
-
-            <div style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 15px; margin-top: 20px;">
-                <p style="color: var(--gold-light); font-size: 0.9rem; margin-bottom: 10px;">Инструкция:</p>
-                <p style="color: rgba(250,248,243,0.7); font-size: 0.85rem; line-height: 1.6;">
-                    1. Откройте Google Таблицу<br>
-                    2. Добавьте новую строку: Дата | Имя | Сумма<br>
-                    3. Нажмите "Обновить данные" на сайте<br>
-                    4. Изменения появятся автоматически
-                </p>
-            </div>
+            <button class="admin-btn" id="refreshData" style="margin-top: 10px;">🔄 Обновить данные</button>
         </div>
     </div>
 
-    <!-- Success Animation -->
-    <div class="success-check" id="successCheck">
-        <svg viewBox="0 0 52 52">
-            <path d="M14 27 L22 35 L38 16"></path>
-        </svg>
-    </div>
+    <!-- Toast -->
+    <div class="toast" id="toast">Номер скопирован!</div>
 
     <script>
-        // Configuration
-        const CONFIG = {
-            GOOGLE_SHEET_ID: '1uppgItrSnXPR742RkgXqxDBD7zPAUXvk2jvA-nLwQTs',
-            TARGET_AMOUNT: 100000,
-            ADMIN_PASSWORD: 'haieuzb2372hjdkwoajc92nf',
-            REFRESH_INTERVAL: 120000 // 2 minutes
-        };
+        // Конфиг
+        const SHEET_ID = '1uppgItrSnXPR742RkgXqxDBD7zPAUXvk2jvA-nLwQTs';
+        const ADMIN_PASS = 'haieuzb2372hjdkwoajc92nf';
+        const TARGET = 100000;
 
-        // State
-        let moonClicks = 0;
-        let lastClickTime = 0;
-        let donorsData = [];
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
-            createStars();
-            loadData();
-            setupEventListeners();
-            setInterval(loadData, CONFIG.REFRESH_INTERVAL);
-        });
-
-        // Create animated stars and crescents
-        function createStars() {
-            const universe = document.getElementById('universe');
-            const starCount = 30;
+        // Создание падающих звезд (оптимизировано)
+        function createSnow() {
+            const container = document.getElementById('snowContainer');
+            const types = ['star-fall', 'crescent-fall'];
             
-            for (let i = 0; i < starCount; i++) {
-                setTimeout(() => {
-                    const isCrescent = Math.random() > 0.8;
-                    const element = document.createElement('div');
-                    element.className = isCrescent ? 'crescent' : 'star';
-                    
-                    const size = Math.random() * 15 + 5;
-                    element.style.width = size + 'px';
-                    element.style.height = size + 'px';
-                    element.style.left = Math.random() * 100 + '%';
-                    element.style.animationDuration = (Math.random() * 10 + 10) + 's';
-                    element.style.animationDelay = Math.random() * 5 + 's';
-                    
-                    universe.appendChild(element);
-                    
-                    // Remove after animation
-                    setTimeout(() => {
-                        element.remove();
-                    }, 20000);
-                }, i * 300);
-            }
-            
-            // Continuous creation
             setInterval(() => {
-                const isCrescent = Math.random() > 0.8;
-                const element = document.createElement('div');
-                element.className = isCrescent ? 'crescent' : 'star';
+                const el = document.createElement('div');
+                el.className = types[Math.floor(Math.random() * types.length)];
+                el.style.left = Math.random() * 100 + '%';
+                el.style.animationDuration = (Math.random() * 5 + 8) + 's';
+                el.style.opacity = Math.random() * 0.5 + 0.3;
+                container.appendChild(el);
                 
-                const size = Math.random() * 15 + 5;
-                element.style.width = size + 'px';
-                element.style.height = size + 'px';
-                element.style.left = Math.random() * 100 + '%';
-                element.style.animationDuration = (Math.random() * 10 + 10) + 's';
-                
-                universe.appendChild(element);
-                
-                setTimeout(() => {
-                    element.remove();
-                }, 20000);
-            }, 1000);
+                setTimeout(() => el.remove(), 13000);
+            }, 800);
         }
 
-        // Setup event listeners
-        function setupEventListeners() {
-            // Moon triple click
-            const moon = document.getElementById('moon');
-            const moonContainer = document.getElementById('moonContainer');
-            
-            moonContainer.addEventListener('click', (e) => {
-                createRipple(e, moon);
-                
-                const now = Date.now();
-                if (now - lastClickTime > 1000) {
-                    moonClicks = 0;
-                }
-                lastClickTime = now;
-                moonClicks++;
-                
-                // Visual feedback
-                moon.classList.add('glow');
-                setTimeout(() => moon.classList.remove('glow'), 300);
-                
-                if (moonClicks === 3) {
-                    moonClicks = 0;
-                    openAdminModal();
-                }
-            });
+        // Данные
+        let donors = [];
 
-            // Title triple click (alternative)
-            const title = document.getElementById('secretTitle');
-            title.addEventListener('click', () => {
-                const now = Date.now();
-                if (now - lastClickTime > 1000) {
-                    moonClicks = 0;
-                }
-                lastClickTime = now;
-                moonClicks++;
-                
-                if (moonClicks === 3) {
-                    moonClicks = 0;
-                    openAdminModal();
-                }
-            });
-
-            // Admin modal
-            document.getElementById('closeAdmin').addEventListener('click', closeAdminModal);
-            document.getElementById('closePanel').addEventListener('click', closeAdminModal);
-            document.getElementById('loginBtn').addEventListener('click', checkPassword);
-            document.getElementById('passwordInput').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') checkPassword();
-            });
-            
-            // Refresh button
-            document.getElementById('refreshBtn').addEventListener('click', () => {
-                const btn = document.getElementById('refreshBtn');
-                btn.classList.add('spinning');
-                loadData().then(() => {
-                    setTimeout(() => btn.classList.remove('spinning'), 1000);
-                });
-            });
-
-            // Close modal on outside click
-            document.getElementById('adminModal').addEventListener('click', (e) => {
-                if (e.target.id === 'adminModal') {
-                    closeAdminModal();
-                }
-            });
-        }
-
-        // Ripple effect
-        function createRipple(e, element) {
-            const rect = element.getBoundingClientRect();
-            const ripple = document.createElement('span');
-            ripple.className = 'ripple';
-            ripple.style.left = (e.clientX - rect.left) + 'px';
-            ripple.style.top = (e.clientY - rect.top) + 'px';
-            element.appendChild(ripple);
-            setTimeout(() => ripple.remove(), 600);
-        }
-
-        // Admin modal functions
-        function openAdminModal() {
-            document.getElementById('adminModal').classList.add('active');
-            document.getElementById('loginForm').style.display = 'block';
-            document.getElementById('adminPanel').classList.remove('active');
-            document.getElementById('passwordInput').value = '';
-            document.getElementById('passwordInput').focus();
-        }
-
-        function closeAdminModal() {
-            document.getElementById('adminModal').classList.remove('active');
-        }
-
-        function checkPassword() {
-            const input = document.getElementById('passwordInput').value;
-            if (input === CONFIG.ADMIN_PASSWORD) {
-                showSuccess();
-                setTimeout(() => {
-                    document.getElementById('loginForm').style.display = 'none';
-                    document.getElementById('adminPanel').classList.add('active');
-                    updateAdminStats();
-                }, 800);
-            } else {
-                document.getElementById('passwordInput').style.borderColor = '#ff4444';
-                setTimeout(() => {
-                    document.getElementById('passwordInput').style.borderColor = '';
-                }, 1000);
-            }
-        }
-
-        function showSuccess() {
-            const check = document.getElementById('successCheck');
-            check.classList.add('active');
-            setTimeout(() => check.classList.remove('active'), 1500);
-        }
-
-        // Load data from Google Sheets
         async function loadData() {
             try {
-                // Using Google Sheets JSON API
-                const url = `https://docs.google.com/spreadsheets/d/${CONFIG.GOOGLE_SHEET_ID}/gviz/tq?tqx=out:json`;
+                const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+                const res = await fetch(url);
+                const text = await res.text();
+                const json = JSON.parse(text.substring(47).slice(0, -2));
                 
-                const response = await fetch(url);
-                const text = await response.text();
-                
-                // Parse JSONP response
-                const jsonStr = text.replace(/\\?\\?\\(\\)/g, '').replace('google.visualization.Query.setResponse(', '').slice(0, -2);
-                const data = JSON.parse(jsonStr);
-                
-                if (data.table && data.table.rows) {
-                    parseSheetData(data.table);
+                donors = [];
+                const rows = json.table.rows;
+                for (let i = 1; i < rows.length; i++) {
+                    const r = rows[i].c;
+                    if (r[0] && r[0].v) {
+                        donors.push({
+                            date: r[0].v,
+                            name: r[1] ? r[1].v : 'Аноним',
+                            amount: parseInt(r[2] ? r[2].v : 0) || 0
+                        });
+                    }
                 }
-            } catch (error) {
-                console.error('Error loading data:', error);
-                // Load mock data if error
-                loadMockData();
+                updateUI();
+            } catch (e) {
+                console.log('Ошибка загрузки');
             }
-        }
-
-        function parseSheetData(table) {
-            const rows = table.rows;
-            donorsData = [];
-            
-            // Skip header row (index 0)
-            for (let i = 1; i < rows.length; i++) {
-                const row = rows[i];
-                if (row.c && row.c[0] && row.c[0].v) {
-                    donorsData.push({
-                        date: row.c[0].v || '',
-                        name: row.c[1] ? row.c[1].v : 'Аноним',
-                        amount: parseInt(row.c[2] ? row.c[2].v : 0) || 0,
-                        note: row.c[3] ? row.c[3].v : ''
-                    });
-                }
-            }
-            
-            updateUI();
-        }
-
-        function loadMockData() {
-            // Fallback data if sheet is not accessible
-            donorsData = [
-                { date: '25.02.2025', name: 'Ахмед', amount: 1000, note: '' },
-                { date: '24.02.2025', name: 'Мухаммад', amount: 500, note: '' }
-            ];
-            updateUI();
         }
 
         function updateUI() {
-            const total = donorsData.reduce((sum, d) => sum + d.amount, 0);
-            const percent = Math.min((total / CONFIG.TARGET_AMOUNT) * 100, 100);
-            const count = donorsData.length;
+            const total = donors.reduce((a, b) => a + b.amount, 0);
+            const percent = Math.min((total / TARGET) * 100, 100);
             
-            // Update progress
-            document.getElementById('currentAmount').textContent = formatMoney(total);
+            document.getElementById('currentAmount').textContent = total.toLocaleString() + ' ₽';
             document.getElementById('progressBar').style.width = percent + '%';
             document.getElementById('percentText').textContent = Math.round(percent) + '%';
-            document.getElementById('donorsCount').textContent = count;
+            document.getElementById('donorsCount').textContent = donors.length;
             
-            // Update donors list
-            const listContainer = document.getElementById('donorsList');
-            if (donorsData.length === 0) {
-                listContainer.innerHTML = '<div class="loading-text">Пока нет пожертвований</div>';
+            const list = document.getElementById('donorsList');
+            if (donors.length === 0) {
+                list.innerHTML = '<div style="text-align: center; color: rgba(250,248,243,0.5); padding: 20px;">Пока нет пожертвований</div>';
             } else {
-                listContainer.innerHTML = donorsData
-                    .slice()
-                    .reverse()
-                    .map(donor => `
-                        <div class="donor-item">
-                            <div class="donor-info">
-                                <span class="donor-name">${escapeHtml(donor.name)}</span>
-                                <span class="donor-date">${donor.date}</span>
-                            </div>
-                            <span class="donor-amount">+${formatMoney(donor.amount)}</span>
-                        </div>
-                    `).join('');
+                list.innerHTML = donors.slice().reverse().map(d => `
+                    <div class="donor-item">
+                        <span class="donor-name">${d.name}</span>
+                        <span class="donor-amount">${d.amount.toLocaleString()} ₽</span>
+                    </div>
+                `).join('');
             }
             
-            // Update admin stats if open
-            updateAdminStats();
+            // Обновить статистику в админке если открыта
+            document.getElementById('statTotal').textContent = (total / 1000).toFixed(1) + 'K';
+            document.getElementById('statCount').textContent = donors.length;
+            document.getElementById('statLeft').textContent = (Math.max(TARGET - total, 0) / 1000).toFixed(0) + 'K';
+            document.getElementById('statPercent').textContent = Math.round(percent) + '%';
         }
 
-        function updateAdminStats() {
-            const total = donorsData.reduce((sum, d) => sum + d.amount, 0);
-            const percent = (total / CONFIG.TARGET_AMOUNT) * 100;
-            const left = Math.max(CONFIG.TARGET_AMOUNT - total, 0);
+        // Копирование карты
+        document.getElementById('cardNumber').addEventListener('click', function() {
+            const num = this.dataset.card;
+            navigator.clipboard.writeText(num).then(() => {
+                this.classList.add('copied');
+                document.getElementById('copyHint').textContent = '✓ Скопировано!';
+                showToast('Номер карты скопирован');
+                setTimeout(() => {
+                    this.classList.remove('copied');
+                    document.getElementById('copyHint').textContent = 'Т-Банк • Нажмите для копирования';
+                }, 2000);
+            });
+        });
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2000);
+        }
+
+        // Секретная панель - удержание 5 секунд
+        const title = document.getElementById('secretTitle');
+        let holdTimer = null;
+        let holdStart = 0;
+
+        function startHold(e) {
+            e.preventDefault();
+            holdStart = Date.now();
+            document.getElementById('holdIndicator').classList.add('active');
             
-            document.getElementById('adminTotal').textContent = formatMoney(total);
-            document.getElementById('adminCount').textContent = donorsData.length;
-            document.getElementById('adminLeft').textContent = formatCompact(left);
-            document.getElementById('adminPercent').textContent = Math.round(percent) + '%';
+            holdTimer = setTimeout(() => {
+                document.getElementById('holdIndicator').classList.remove('active');
+                openAdmin();
+            }, 5000);
         }
 
-        // Utilities
-        function formatMoney(amount) {
-            return new Intl.NumberFormat('ru-RU').format(amount) + ' ₽';
-        }
-
-        function formatCompact(amount) {
-            if (amount >= 1000) {
-                return (amount / 1000).toFixed(0) + 'K';
+        function endHold() {
+            if (holdTimer) {
+                clearTimeout(holdTimer);
+                holdTimer = null;
             }
-            return amount;
+            document.getElementById('holdIndicator').classList.remove('active');
         }
 
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
+        title.addEventListener('mousedown', startHold);
+        title.addEventListener('touchstart', startHold);
+        title.addEventListener('mouseup', endHold);
+        title.addEventListener('touchend', endHold);
+        title.addEventListener('mouseleave', endHold);
+
+        // Админ панель
+        function openAdmin() {
+            document.getElementById('adminModal').classList.add('active');
+            document.getElementById('loginContent').style.display = 'block';
+            document.getElementById('panelContent').style.display = 'none';
+            document.getElementById('adminPass').value = '';
+            document.getElementById('adminPass').focus();
         }
 
-        // Service Worker for offline support (optional enhancement)
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js').catch(() => {});
-        }
+        document.getElementById('closeAdmin').addEventListener('click', () => {
+            document.getElementById('adminModal').classList.remove('active');
+        });
+
+        document.getElementById('loginBtn').addEventListener('click', () => {
+            if (document.getElementById('adminPass').value === ADMIN_PASS) {
+                document.getElementById('loginContent').style.display = 'none';
+                document.getElementById('panelContent').style.display = 'block';
+                updateUI();
+            } else {
+                document.getElementById('adminPass').style.borderColor = '#ff4444';
+                setTimeout(() => {
+                    document.getElementById('adminPass').style.borderColor = '';
+                }, 1000);
+            }
+        });
+
+        document.getElementById('refreshData').addEventListener('click', function() {
+            this.textContent = '⏳ Обновление...';
+            loadData().then(() => {
+                setTimeout(() => {
+                    this.textContent = '🔄 Обновить данные';
+                    showToast('Данные обновлены');
+                }, 500);
+            });
+        });
+
+        // Закрытие по фону
+        document.getElementById('adminModal').addEventListener('click', (e) => {
+            if (e.target.id === 'adminModal') {
+                document.getElementById('adminModal').classList.remove('active');
+            }
+        });
+
+        // Инициализация
+        createSnow();
+        loadData();
+        setInterval(loadData, 120000); // Обновление каждые 2 минуты
     </script>
 </body>
-</html>'''
-
-# Сохраняем HTML
-with open(f"{project_dir}/index.html", "w", encoding="utf-8") as f:
-    f.write(html_content)
-
-print("✅ index.html создан")
+</html>
