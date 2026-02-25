@@ -3,126 +3,155 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BLAGO.PROJECT05 — Рамадан 2026</title>
+    <title>BLAGO.PROJECT05 — Ramadan 2026</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;600&family=Noto+Sans+Arabic:wght@300;500&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: #000; min-height: 100vh; overflow-x: hidden; color: white; }
-        .arabic-font { font-family: 'Noto Sans Arabic', sans-serif; }
+        :root { --accent: #9b1c1c; --gold: #d4af37; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+        body { background-color: #050505; color: #fff; font-family: 'Inter', sans-serif; overflow-x: hidden; }
         
-        /* Сферы фона */
-        .sphere-red { position: fixed; top: -15%; left: 50%; transform: translateX(-50%); width: 70vw; height: 70vw; background: radial-gradient(circle, rgba(180, 30, 30, 0.7) 0%, rgba(139, 0, 0, 0.3) 40%, transparent 70%); border-radius: 50%; filter: blur(80px); pointer-events: none; z-index: 0; animation: float-red 8s ease-in-out infinite; }
-        @keyframes float-red { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(-30px); } }
+        /* Элегантный фон */
+        .bg-glow { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 50% -20%, #2a0505 0%, #050505 60%); z-index: -1; }
+        
+        /* Анимация звезд и полумесяцев (вместо снега) */
+        .ramadan-objects { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+        .object { position: absolute; color: var(--gold); opacity: 0.3; animation: float linear infinite; }
+        @keyframes float {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.4; }
+            90% { opacity: 0.4; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        }
 
-        /* Карточки */
-        .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 28px; position: relative; z-index: 10; }
-        .glass-panel { background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 20px; }
+        .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 30px; }
         
-        .btn-primary { background: linear-gradient(135deg, #B41E1E 0%, #700000 100%); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 15px 50px rgba(180, 30, 30, 0.5); }
-        
-        .progress-container { background: rgba(255, 255, 255, 0.05); border-radius: 100px; overflow: hidden; }
-        .progress-fill { background: linear-gradient(90deg, #B41E1E 0%, #E04040 100%); border-radius: 100px; transition: width 1.5s ease; }
+        .fade-in { animation: fadeIn 1.5s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .input-glass { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: white; border-radius: 12px; }
-        
-        .section { display: none; width: 100%; min-height: 100vh; flex-direction: column; justify-content: center; align-items: center; padding: 24px; }
-        .section.active { display: flex; }
+        .btn-luxury { background: #fff; color: #000; border-radius: 100px; transition: all 0.4s ease; font-weight: 600; }
+        .btn-luxury:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(255,255,255,0.15); }
 
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(15px); display: none; justify-content: center; align-items: center; z-index: 100; }
-        .modal-overlay.active { display: flex; }
+        .btn-insta { background: rgba(225, 48, 108, 0.1); border: 1px solid rgba(225, 48, 108, 0.3); color: #fff; border-radius: 100px; transition: all 0.4s ease; }
+        .btn-insta:hover { background: rgba(225, 48, 108, 0.2); box-shadow: 0 0 20px rgba(225, 48, 108, 0.4); }
+
+        .progress-track { background: rgba(255,255,255,0.03); border-radius: 10px; height: 4px; overflow: hidden; }
+        .progress-bar { background: #fff; height: 100%; width: 0%; transition: width 2s ease-in-out; }
+
+        .section { display: none; opacity: 0; }
+        .section.active { display: flex; opacity: 1; }
+        
+        input { background: rgba(255,255,255,0.03) !important; border: 1px solid rgba(255,255,255,0.1) !important; color: white !important; border-radius: 12px !important; }
     </style>
 </head>
 <body>
-    <div class="sphere-red"></div>
+    <div class="bg-glow"></div>
+    <div class="ramadan-objects" id="objects-container"></div>
 
-    <section id="welcome" class="section active">
-        <div class="glass-card px-8 py-10 text-center max-w-lg w-full">
-            <h1 class="text-4xl font-bold mb-2">БЛАГО <span class="arabic-font text-white/90">| الخير</span></h1>
-            <p class="text-xs text-white/40 tracking-[0.3em] uppercase mb-6">project zero five</p>
+    <section id="welcome" class="section active min-h-screen flex flex-col items-center justify-center p-6 text-center">
+        <div class="fade-in max-w-xl w-full z-10">
+            <p class="text-[10px] tracking-[0.8em] uppercase text-white/40 mb-8">Ramadan Kareem • 2026</p>
             
-            <div class="glass-panel p-4 mb-6 grid grid-cols-2 gap-4">
-                <div>
-                    <p class="text-3xl font-bold text-red-500" id="totalRaised">0</p>
-                    <p class="text-[10px] text-white/50 uppercase">собрано (₽)</p>
+            <h1 class="text-6xl md:text-7xl font-light tracking-tighter mb-2">БЛАГО</h1>
+            <p class="Noto Sans Arabic text-xl text-white/20 mb-12 font-light tracking-[0.2em]">ПРОЕКТ 05</p>
+
+            <div class="grid grid-cols-2 gap-8 mb-16">
+                <div class="glass p-6">
+                    <p class="text-[9px] uppercase tracking-widest text-white/30 mb-2">Собрано (₽)</p>
+                    <p class="text-2xl font-light text-white" id="totalRaised">0</p>
                 </div>
-                <div>
-                    <p class="text-3xl font-bold text-red-500" id="peopleFed">0</p>
-                    <p class="text-[10px] text-white/50 uppercase">накормлено</p>
+                <div class="glass p-6">
+                    <p class="text-[9px] uppercase tracking-widest text-white/30 mb-2">Накормлено</p>
+                    <p class="text-2xl font-light text-white" id="peopleFed">0</p>
                 </div>
             </div>
 
-            <div class="mb-6 text-left">
-                <div class="flex justify-between text-xs mb-2 text-white/60">
-                    <span>Цель: 1,000,000 ₽</span>
+            <div class="mb-12 text-left px-2">
+                <div class="flex justify-between text-[10px] uppercase tracking-widest text-white/30 mb-4">
+                    <span>Цель: 100,000 ₽</span>
                     <span id="progressPercent">0%</span>
                 </div>
-                <div class="progress-container h-2">
-                    <div id="progressBar" class="progress-fill h-full" style="width: 0%"></div>
+                <div class="progress-track">
+                    <div id="progressBar" class="progress-bar"></div>
                 </div>
             </div>
 
-            <button onclick="showSection('transfer')" class="btn-primary w-full py-4 rounded-full font-bold text-lg mb-4">ПОДДЕРЖАТЬ</button>
-        </div>
-    </section>
-
-    <section id="transfer" class="section">
-        <div class="glass-card p-8 max-w-md w-full">
-            <h2 class="text-2xl font-bold mb-6 text-center">Реквизиты</h2>
-            <div class="glass-panel p-4 mb-6 cursor-pointer" onclick="copyCard()">
-                <p class="text-xs text-white/40 mb-1">Нажми, чтобы скопировать карту</p>
-                <p class="text-xl font-mono tracking-widest">2200 7019 7567 8803</p>
-                <p id="copyStatus" class="text-green-500 text-xs mt-2 hidden">Скопировано!</p>
+            <div class="flex flex-col gap-4">
+                <button onclick="showSection('transfer')" class="btn-luxury w-full py-5 text-xs uppercase tracking-widest">Внести вклад</button>
+                <a href="https://instagram.com/blago.project05" target="_blank" class="btn-insta w-full py-5 text-xs uppercase tracking-widest flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                    Instagram
+                </a>
             </div>
-            <button onclick="showModal()" class="btn-primary w-full py-4 rounded-full font-bold mb-4">Я СДЕЛАЛ ПЕРЕВОД</button>
-            <button onclick="showSection('welcome')" class="text-white/40 text-sm">← Назад</button>
         </div>
     </section>
 
-    <section id="adminLogin" class="section">
-        <div class="glass-card p-8 max-w-sm w-full text-center">
-            <h2 class="text-xl font-bold mb-4">Доступ для Layth_Berzloy</h2>
-            <input type="password" id="passInput" placeholder="Пароль" class="input-glass w-full p-4 mb-4 text-center">
-            <button onclick="checkPass()" class="btn-primary w-full py-3 rounded-xl mb-4">Войти</button>
-            <button onclick="showSection('welcome')" class="text-white/40 text-sm">Отмена</button>
-        </div>
-    </section>
-
-    <section id="adminPanel" class="section">
-        <div class="glass-card p-6 max-w-lg w-full">
-            <h2 class="text-xl font-bold mb-4">Управление проектом</h2>
-            <div class="space-y-3 mb-6">
-                <input type="text" id="donorName" placeholder="Имя (например: Брат)" class="input-glass w-full p-3 text-sm">
-                <input type="number" id="donorAmount" placeholder="Сумма (₽)" class="input-glass w-full p-3 text-sm">
-                <button onclick="addNewDonation()" class="btn-primary w-full py-3 rounded-xl font-bold">+ Добавить взнос</button>
+    <section id="transfer" class="section min-h-screen flex flex-col items-center justify-center p-6">
+        <div class="glass p-10 max-w-md w-full text-center">
+            <h3 class="text-sm uppercase tracking-widest mb-8">Реквизиты для перевода</h3>
+            <div class="py-6 border-y border-white/5 mb-8 cursor-pointer group" onclick="copyCard()">
+                <p class="text-[10px] text-white/30 uppercase mb-2">Перевод на карту</p>
+                <p class="text-xl tracking-widest font-light">2200 7019 7567 8803</p>
+                <p id="copyStatus" class="text-[10px] text-gold mt-2 opacity-0 uppercase tracking-widest">Скопировано</p>
             </div>
-            <div id="adminList" class="glass-panel p-4 max-h-64 overflow-y-auto space-y-2 text-sm">
-                </div>
-            <button onclick="showSection('welcome')" class="w-full mt-4 text-white/40 py-2">Выйти на сайт</button>
+            <button onclick="showModal()" class="w-full py-4 border border-white/10 rounded-full text-[10px] uppercase tracking-widest mb-4 hover:bg-white/5 transition-all">Подтвердить перевод</button>
+            <button onclick="showSection('welcome')" class="text-[9px] uppercase tracking-widest text-white/20">Назад</button>
         </div>
     </section>
 
-    <div id="modal" class="modal-overlay" onclick="this.classList.remove('active')">
-        <div class="glass-card p-10 text-center mx-4">
-            <h3 class="text-2xl font-bold mb-2">Принято!</h3>
-            <p class="text-white/60">Ваш вклад будет добавлен после проверки</p>
+    <section id="adminLogin" class="section min-h-screen flex flex-col items-center justify-center p-6 text-center">
+        <div class="max-w-xs w-full">
+            <input type="password" id="passInput" placeholder="Password" class="w-full p-4 mb-4 text-center">
+            <button onclick="checkPass()" class="text-[10px] uppercase tracking-widest text-white/40 hover:text-white">Verify</button>
+        </div>
+    </section>
+
+    <section id="adminPanel" class="section min-h-screen flex flex-col items-center justify-center p-6">
+        <div class="glass p-8 max-w-lg w-full">
+            <div class="flex justify-between mb-8">
+                <p class="text-xs uppercase tracking-widest text-white/40">Dashboard</p>
+                <button onclick="showSection('welcome')" class="text-white/20 hover:text-white">✕</button>
+            </div>
+            <div class="flex flex-col gap-3 mb-8">
+                <input type="text" id="donorName" placeholder="Имя" class="p-4 text-sm">
+                <input type="number" id="donorAmount" placeholder="Сумма" class="p-4 text-sm">
+                <button onclick="addNewDonation()" class="bg-white text-black py-4 rounded-xl text-xs font-bold uppercase tracking-widest">Добавить</button>
+            </div>
+            <div id="adminList" class="space-y-3 max-h-48 overflow-y-auto pr-2"></div>
+        </div>
+    </section>
+
+    <div id="modal" class="fixed inset-0 bg-black/95 backdrop-blur-xl hidden items-center justify-center z-50 p-6" onclick="this.style.display='none'">
+        <div class="text-center">
+            <p class="text-3xl font-light mb-4">Jazakallah Khayran</p>
+            <p class="text-[10px] uppercase tracking-widest text-white/30">Ваш вклад будет добавлен после проверки</p>
         </div>
     </div>
 
-    <footer class="fixed bottom-0 w-full py-6 text-center">
-        <a href="https://instagram.com/blago.project05" class="text-white/40 text-sm block mb-2">@blago.project05</a>
-        <button onclick="showSection('adminLogin')" class="text-[10px] text-white/10 tracking-[0.4em] uppercase hover:text-white/40 transition-all">
-            Вход для администратора
-        </button>
+    <footer class="fixed bottom-8 w-full text-center">
+        <button onclick="showSection('adminLogin')" class="opacity-5 hover:opacity-40 transition-opacity text-[8px] tracking-[1em] text-white uppercase">Control Panel</button>
     </footer>
 
     <script>
         const MY_PASS = 'FBI002KOLA';
-        const GOAL = 1000000;
+        const GOAL = 100000;
         let data = JSON.parse(localStorage.getItem('blago_data')) || [];
+
+        // Создание плавающих объектов (звезды и полумесяцы)
+        function createObjects() {
+            const container = document.getElementById('objects-container');
+            const icons = ['★', '🌙', '✦'];
+            for (let i = 0; i < 20; i++) {
+                const obj = document.createElement('div');
+                obj.className = 'object';
+                obj.innerText = icons[Math.floor(Math.random() * icons.length)];
+                obj.style.left = Math.random() * 100 + 'vw';
+                obj.style.fontSize = (Math.random() * 15 + 10) + 'px';
+                obj.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                obj.style.animationDelay = (Math.random() * 5) + 's';
+                container.appendChild(obj);
+            }
+        }
 
         function showSection(id) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -134,9 +163,8 @@
         function checkPass() {
             if(document.getElementById('passInput').value === MY_PASS) {
                 showSection('adminPanel');
-            } else {
-                alert('Неверный пароль');
-            }
+                document.getElementById('passInput').value = '';
+            } else { alert('Access Denied'); }
         }
 
         function addNewDonation() {
@@ -162,9 +190,9 @@
         function renderAdminList() {
             const container = document.getElementById('adminList');
             container.innerHTML = data.map(i => `
-                <div class="flex justify-between items-center border-b border-white/5 pb-2">
-                    <span>${i.name}: <b>${i.amount}₽</b></span>
-                    <button onclick="deleteItem(${i.id})" class="text-red-500 ml-4">✕</button>
+                <div class="flex justify-between items-center py-3 border-b border-white/5">
+                    <span class="text-xs text-white/50">${i.name} • <span class="text-white">${i.amount}₽</span></span>
+                    <button onclick="deleteItem(${i.id})" class="text-[10px] text-white/20 hover:text-white">✕</button>
                 </div>
             `).join('');
         }
@@ -174,7 +202,7 @@
             const people = Math.floor(total / 100);
             const percent = Math.min(100, Math.floor((total / GOAL) * 100));
 
-            document.getElementById('totalRaised').innerText = total.toLocaleString();
+            document.getElementById('totalRaised').innerText = total.toLocaleString() + ' ₽';
             document.getElementById('peopleFed').innerText = people.toLocaleString();
             document.getElementById('progressPercent').innerText = percent + '%';
             document.getElementById('progressBar').style.width = percent + '%';
@@ -182,13 +210,15 @@
 
         function copyCard() {
             navigator.clipboard.writeText('2200 7019 7567 8803');
-            document.getElementById('copyStatus').classList.remove('hidden');
-            setTimeout(() => document.getElementById('copyStatus').classList.add('hidden'), 2000);
+            const status = document.getElementById('copyStatus');
+            status.style.opacity = '1';
+            setTimeout(() => status.style.opacity = '0', 2000);
         }
 
-        function showModal() { document.getElementById('modal').classList.add('active'); }
+        function showModal() { document.getElementById('modal').style.display = 'flex'; }
 
+        createObjects();
         window.onload = updateStats;
     </script>
 </body>
-</html>
+</html> 
