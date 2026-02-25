@@ -3,257 +3,219 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>BLAGO • 2026</title>
+    <title>БЛАГО 2026 | Ramadan</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;600;800&family=Noto+Sans+Arabic:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root { --brand: #ff3b3b; --gold: #d4af37; }
-        * { 
-            margin: 0; padding: 0; box-sizing: border-box; 
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            -webkit-font-smoothing: antialiased;
-            user-select: none;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+        
+        body { background: #000; color: #fff; height: 100vh; width: 100vw; overflow: hidden; position: fixed; }
 
-        body { 
-            background: #000; color: #fff; 
-            height: 100vh; width: 100vw; 
-            overflow: hidden; position: fixed;
-        }
+        /* Живой фон с частицами */
+        #canvas { position: fixed; inset: 0; z-index: -1; }
+        .bg-overlay { position: fixed; inset: 0; background: radial-gradient(circle at center, transparent 0%, #000 90%); z-index: -1; }
 
-        /* Ультра-современный живой фон */
-        .app-bg {
-            position: fixed; inset: 0; z-index: -1;
-            background: #000;
-        }
-        .bg-glow {
-            position: absolute; width: 150vw; height: 100vh;
-            top: -50%; left: -25%;
-            background: radial-gradient(circle at center, #300 0%, transparent 50%);
-            filter: blur(80px);
-            animation: drift 15s infinite alternate ease-in-out;
-        }
-        @keyframes drift { from { transform: translate(-10%, -10%) scale(1); } to { transform: translate(10%, 10%) scale(1.1); } }
-
-        /* Контейнер приложения */
-        .app-shell {
-            height: 100%; display: flex; flex-direction: column;
-            padding: env(safe-area-inset-top) 24px env(safe-area-inset-bottom);
-        }
-
-        /* Стекло */
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(40px) saturate(1.5);
-            -webkit-backdrop-filter: blur(40px) saturate(1.5);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 32px;
-        }
-
-        /* Кнопки в стиле iOS */
-        .ios-btn {
-            background: #fff; color: #000;
-            border-radius: 24px; font-weight: 700;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex; align-items: center; justify-content: center;
-        }
-        .ios-btn:active { transform: scale(0.92); opacity: 0.8; }
-
-        .ios-btn-secondary {
-            background: rgba(255,255,255,0.05); color: #fff;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
+        /* Эффект стекла 2026 */
+        .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 30px; }
+        
+        /* Кнопки */
+        .btn-main { background: #fff; color: #000; border-radius: 22px; font-weight: 800; transition: 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        .btn-main:active { transform: scale(0.92); filter: brightness(0.9); }
 
         /* Секции */
-        .page { 
-            position: absolute; inset: 0; padding: inherit;
-            display: none; flex-direction: column; opacity: 0;
-            transform: scale(1.05); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .page.active { display: flex; opacity: 1; transform: scale(1); }
+        .page { position: absolute; inset: 0; padding: env(safe-area-inset-top) 20px env(safe-area-inset-bottom); display: none; flex-direction: column; justify-content: center; }
+        .page.active { display: flex; animation: pageIn 0.6s ease-out; }
+        @keyframes pageIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
         /* Прогресс-бар */
-        .progress-track { height: 8px; background: rgba(255,255,255,0.05); border-radius: 100px; overflow: hidden; }
-        .progress-bar { 
-            height: 100%; width: 0%; background: linear-gradient(90deg, #600, var(--brand));
-            box-shadow: 0 0 20px rgba(255, 59, 59, 0.4);
-            transition: width 2s cubic-bezier(0.65, 0, 0.35, 1);
-        }
+        .progress-line { height: 10px; background: rgba(255,255,255,0.05); border-radius: 100px; overflow: hidden; position: relative; }
+        .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--gold), var(--brand)); box-shadow: 0 0 20px rgba(212, 175, 55, 0.5); transition: width 2s cubic-bezier(0.34, 1.56, 0.64, 1); }
 
-        input {
-            background: rgba(255,255,255,0.05) !important; border: 1px solid rgba(255,255,255,0.1) !important;
-            color: #fff !important; width: 100%; padding: 20px; border-radius: 20px; outline: none; font-size: 16px;
-        }
-
-        .shimmer {
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
-            background-size: 200% 100%; animation: shimmer 2s infinite;
-        }
-        @keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+        input { background: rgba(255,255,255,0.05) !important; border: 1px solid rgba(255,255,255,0.1) !important; color: #fff !important; padding: 20px; border-radius: 20px; outline: none; width: 100%; font-size: 16px; }
+        
+        /* Анимация падающих звезд */
+        .falling-star { position: absolute; top: -50px; pointer-events: none; color: var(--gold); opacity: 0.6; z-index: 0; animation: fall linear forwards; }
+        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
     </style>
 </head>
 <body>
-    <div class="app-bg"><div class="bg-glow"></div></div>
+    <div class="bg-overlay"></div>
+    <div id="star-container"></div>
 
-    <div class="app-shell">
-        <section id="main" class="page active">
-            <div class="flex-1 flex flex-col justify-center">
-                <div class="text-center mb-12">
-                    <p class="text-[10px] tracking-[0.8em] text-white/30 uppercase font-bold mb-4">Ramadan Humanitarian Aid</p>
-                    <h1 id="adminTrigger" class="text-7xl font-extrabold tracking-tighter mb-2 transition-all active:scale-95">БЛАГО</h1>
-                    <p class="text-white/10 text-xl tracking-widest uppercase font-light">Project 05</p>
+    <div class="app">
+        <section id="home" class="page active">
+            <div class="text-center mb-10">
+                <p class="text-[9px] tracking-[0.7em] text-white/30 uppercase mb-3">Ramadan Kareem 2026</p>
+                <h1 id="adminTrigger" class="text-7xl font-extrabold tracking-tighter italic transition-all active:opacity-50">БЛАГО</h1>
+                <p class="Noto Sans Arabic text-gold text-lg mt-2 opacity-60 italic">«Дающий — не обеднеет»</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div class="glass p-6 text-center">
+                    <p class="text-[10px] uppercase text-white/20 font-bold mb-1 tracking-widest">Собрано</p>
+                    <p class="text-3xl font-bold tracking-tight" id="raisedNum">0 ₽</p>
                 </div>
-
-                <div class="grid grid-cols-2 gap-4 mb-4">
-                    <div class="glass-panel p-6">
-                        <p class="text-[10px] uppercase text-white/20 font-bold mb-1">Собрано</p>
-                        <p class="text-3xl font-bold tracking-tight" id="raisedVal">0 ₽</p>
-                    </div>
-                    <div class="glass-panel p-6">
-                        <p class="text-[10px] uppercase text-white/20 font-bold mb-1">Накормлено</p>
-                        <p class="text-3xl font-bold tracking-tight" id="fedVal">0</p>
-                    </div>
-                </div>
-
-                <div class="glass-panel p-8">
-                    <div class="flex justify-between items-end mb-4">
-                        <span class="text-[10px] font-bold text-white/30 uppercase tracking-widest">Прогресс цели</span>
-                        <span class="text-3xl font-extrabold" id="percentVal">0%</span>
-                    </div>
-                    <div class="progress-track mb-2">
-                        <div id="barVal" class="progress-bar"></div>
-                    </div>
-                    <div class="flex justify-between text-[10px] text-white/20 font-bold uppercase">
-                        <span>Старт: 0</span>
-                        <span>Цель: 100,000</span>
-                    </div>
+                <div class="glass p-6 text-center">
+                    <p class="text-[10px] uppercase text-white/20 font-bold mb-1 tracking-widest">Накормлено</p>
+                    <p class="text-3xl font-bold tracking-tight" id="fedNum">0</p>
                 </div>
             </div>
 
-            <div class="pb-10 space-y-4">
-                <button onclick="nav('pay')" class="ios-btn w-full py-6 text-sm uppercase tracking-widest shadow-2xl shadow-white/5">Внести вклад</button>
-                <a href="https://instagram.com/blago.project05" target="_blank" class="ios-btn ios-btn-secondary w-full py-5 text-[10px] uppercase tracking-widest">Instagram</a>
+            <div class="glass p-8 mb-10">
+                <div class="flex justify-between items-end mb-4">
+                    <span class="text-[10px] font-bold text-white/40 uppercase tracking-widest">Цель: 100,000 ₽</span>
+                    <span class="text-3xl font-black text-white" id="percNum">0%</span>
+                </div>
+                <div class="progress-line">
+                    <div id="bar" class="progress-fill"></div>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <button onclick="nav('transfer')" class="btn-main w-full py-6 text-sm uppercase tracking-widest shadow-2xl shadow-red-900/20">Внести вклад</button>
+                <a href="https://instagram.com/blago.project05" target="_blank" class="glass w-full py-5 flex items-center justify-center gap-3 text-[10px] font-bold uppercase tracking-widest">
+                    <img src="https://cdn-icons-png.flaticon.com/512/174/174855.png" class="w-4 h-4 invert opacity-40">
+                    Instagram
+                </a>
             </div>
         </section>
 
-        <section id="pay" class="page">
-            <div class="flex-1 flex flex-col justify-center">
-                <div class="glass-panel p-10 text-center">
-                    <div class="w-16 h-1 w-full bg-white/10 rounded-full mb-10 mx-auto"></div>
-                    <h3 class="text-xl font-bold mb-10 tracking-tight">Реквизиты фонда</h3>
-                    
-                    <div onclick="copy()" class="bg-black/40 rounded-3xl p-8 border border-white/5 mb-8 transition-transform active:scale-95">
-                        <p class="text-[9px] text-white/20 font-bold uppercase mb-4 tracking-widest">Карта для перевода</p>
-                        <p class="text-2xl font-bold tracking-[0.2em] text-white">2200 7019 7567 8803</p>
-                        <p id="copyStatus" class="text-[10px] text-green-500 mt-4 font-bold opacity-0 transition-opacity">СКОПИРОВАНО</p>
-                    </div>
-
-                    <button onclick="thanks()" class="ios-btn ios-btn-secondary w-full py-5 text-[10px] uppercase tracking-widest mb-6">Я подтверждаю перевод</button>
-                    <button onclick="nav('main')" class="text-xs text-white/20 font-bold uppercase">Вернуться назад</button>
+        <section id="transfer" class="page">
+            <div class="glass p-10 text-center">
+                <h2 class="text-xl font-bold mb-10 tracking-widest uppercase text-white/80">Реквизиты</h2>
+                <div class="bg-black/50 rounded-[30px] p-8 border border-white/5 mb-8 active:scale-95 transition-transform" onclick="copy()">
+                    <p class="text-[10px] text-white/20 font-bold uppercase mb-4 tracking-widest">Нажми, чтобы скопировать</p>
+                    <p class="text-2xl font-bold tracking-[0.2em]" id="card">2200 7019 7567 8803</p>
+                    <p id="copyOk" class="text-[10px] text-green-500 mt-4 font-bold opacity-0 uppercase">Скопировано</p>
                 </div>
+                <button onclick="finish()" class="btn-main w-full py-6 text-[11px] uppercase tracking-widest mb-6">Я отправил деньги</button>
+                <button onclick="nav('home')" class="text-[10px] text-white/20 font-bold uppercase tracking-[0.3em]">Вернуться</button>
             </div>
         </section>
 
         <section id="admin" class="page">
-            <div class="flex-1 flex flex-col pt-10">
+            <div class="glass p-8 w-full max-w-md mx-auto">
                 <div class="flex justify-between items-center mb-8">
-                    <h2 class="text-xl font-bold tracking-tight">Панель управления</h2>
-                    <button onclick="nav('main')" class="w-10 h-10 glass-panel flex items-center justify-center font-bold">✕</button>
+                    <h2 class="text-sm font-bold uppercase tracking-widest text-white/40">Управление</h2>
+                    <button onclick="nav('home')" class="text-2xl">✕</button>
                 </div>
-                
                 <div class="space-y-4 mb-10">
-                    <input type="text" id="dName" placeholder="Имя донора">
-                    <input type="number" id="dSum" placeholder="Сумма (₽)">
-                    <button onclick="add()" class="ios-btn w-full py-5 text-xs uppercase tracking-widest">Добавить данные</button>
+                    <input type="text" id="aName" placeholder="Имя донора">
+                    <input type="number" id="aSum" placeholder="Сумма (₽)">
+                    <button onclick="add()" class="btn-main w-full py-5 text-xs uppercase">Обновить базу</button>
                 </div>
-
-                <div id="list" class="space-y-3 overflow-y-auto max-h-[400px] pr-2"></div>
+                <div id="aList" class="space-y-3 overflow-y-auto max-h-[300px] pr-2"></div>
             </div>
         </section>
     </div>
 
-    <div id="success" class="fixed inset-0 bg-black/98 backdrop-blur-3xl hidden items-center justify-center z-50 transition-all p-10 text-center" onclick="this.style.display='none'">
+    <div id="modal" class="fixed inset-0 bg-black/98 backdrop-blur-3xl hidden items-center justify-center z-50 text-center p-10" onclick="this.style.display='none'">
         <div>
-            <div class="text-6xl mb-6">🌙</div>
-            <h2 class="text-5xl font-extrabold italic mb-4 tracking-tighter leading-tight">JAZAKALLAH<br>KHAYRAN</h2>
-            <p class="text-white/20 uppercase tracking-[0.3em] text-[10px]">Ваше добро вернется к вам</p>
+            <div class="text-6xl mb-8 animate-bounce">🌙</div>
+            <h2 class="text-5xl font-extrabold italic mb-4 tracking-tighter uppercase">JazakAllah<br>Khayran</h2>
+            <p class="text-white/20 uppercase tracking-[0.4em] text-[10px]">Ваш вклад принят</p>
         </div>
     </div>
 
     <script>
-        const P_KEY = 'FBI002KOLA';
-        const TARGET = 100000;
-        let store = JSON.parse(localStorage.getItem('blago_2026_final')) || [];
+        const KEY = 'FBI002KOLA';
+        const GOAL = 100000;
+        let db = JSON.parse(localStorage.getItem('blago_final_2026')) || [];
 
-        // Секретный вход: удерживай "БЛАГО" 2 секунды
+        // Секретный вход: 3 секунды на "БЛАГО"
         let timer;
         const trigger = document.getElementById('adminTrigger');
         trigger.addEventListener('touchstart', () => { timer = setTimeout(() => {
-            const p = prompt('SECRET ACCESS:');
-            if(p === P_KEY) nav('admin');
-        }, 2000); });
+            const p = prompt('PASSWORD:'); if(p === KEY) nav('admin');
+        }, 3000); });
         trigger.addEventListener('touchend', () => clearTimeout(timer));
 
         function nav(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            setTimeout(() => {
-                document.getElementById(id).classList.add('active');
-                if(id === 'admin') drawList();
-            }, 50);
-            update();
+            document.getElementById(id).classList.add('active');
+            if(id === 'admin') drawAdmin();
+            update(true);
         }
 
         function add() {
-            const n = document.getElementById('dName').value;
-            const s = parseInt(document.getElementById('dSum').value);
+            const n = document.getElementById('aName').value, s = parseInt(document.getElementById('aSum').value);
             if(n && s) {
-                store.unshift({ id: Date.now(), n, s });
-                localStorage.setItem('blago_2026_final', JSON.stringify(store));
-                document.getElementById('dName').value = '';
-                document.getElementById('dSum').value = '';
-                drawList();
-                update();
+                db.unshift({ id: Date.now(), n, s });
+                localStorage.setItem('blago_final_2026', JSON.stringify(db));
+                document.getElementById('aName').value = ''; document.getElementById('aSum').value = '';
+                drawAdmin(); update(true);
             }
         }
 
-        function del(id) {
-            store = store.filter(i => i.id !== id);
-            localStorage.setItem('blago_2026_final', JSON.stringify(store));
-            drawList();
-            update();
-        }
+        function del(id) { db = db.filter(i => i.id !== id); localStorage.setItem('blago_final_2026', JSON.stringify(db)); drawAdmin(); update(true); }
 
-        function drawList() {
-            document.getElementById('list').innerHTML = store.map(i => `
-                <div class="glass-panel p-5 flex justify-between items-center border-white/5">
-                    <div>
-                        <p class="text-xs font-bold text-white/60 mb-1">${i.n}</p>
-                        <p class="text-lg font-bold">${i.s.toLocaleString()} ₽</p>
-                    </div>
-                    <button onclick="del(${i.id})" class="text-red-500 font-bold p-2 text-xl">✕</button>
+        function drawAdmin() {
+            document.getElementById('aList').innerHTML = db.map(i => `
+                <div class="glass p-4 flex justify-between items-center border-white/5">
+                    <span class="text-xs font-bold text-white/50">${i.n} — ${i.s}₽</span>
+                    <button onclick="del(${i.id})" class="text-red-500 font-bold p-2">✕</button>
                 </div>
             `).join('');
         }
 
-        function update() {
-            const total = store.reduce((a, b) => a + b.s, 0);
-            const perc = Math.min(100, Math.floor((total / TARGET) * 100));
-            document.getElementById('raisedVal').innerText = total.toLocaleString() + ' ₽';
-            document.getElementById('fedVal').innerText = Math.floor(total / 100).toLocaleString();
-            document.getElementById('percentVal').innerText = perc + '%';
-            document.getElementById('barVal').style.width = perc + '%';
+        // Анимированный счетчик
+        function animateValue(obj, start, end, duration) {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const val = Math.floor(progress * (end - start) + start);
+                obj.innerHTML = obj.id === 'raisedNum' ? val.toLocaleString() + ' ₽' : 
+                               obj.id === 'percNum' ? val + '%' : val;
+                if (progress < 1) window.requestAnimationFrame(step);
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        function update(anim = false) {
+            const total = db.reduce((a, b) => a + b.s, 0);
+            const perc = Math.min(100, Math.floor((total / GOAL) * 100));
+            const fed = Math.floor(total / 100);
+
+            if(anim) {
+                animateValue(document.getElementById('raisedNum'), 0, total, 1500);
+                animateValue(document.getElementById('fedNum'), 0, fed, 1500);
+                animateValue(document.getElementById('percNum'), 0, perc, 1500);
+            } else {
+                document.getElementById('raisedNum').innerText = total.toLocaleString() + ' ₽';
+                document.getElementById('fedNum').innerText = fed;
+                document.getElementById('percNum').innerText = perc + '%';
+            }
+            document.getElementById('bar').style.width = perc + '%';
+        }
+
+        // Эффект падающих звезд и полумесяцев
+        function createStars() {
+            const container = document.getElementById('star-container');
+            const symbols = ['🌙', '✦', '★', '•'];
+            setInterval(() => {
+                const star = document.createElement('div');
+                star.className = 'falling-star';
+                star.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+                star.style.left = Math.random() * 100 + 'vw';
+                star.style.fontSize = Math.random() * 15 + 10 + 'px';
+                star.style.animationDuration = Math.random() * 3 + 5 + 's';
+                container.appendChild(star);
+                setTimeout(() => star.remove(), 8000);
+            }, 600);
         }
 
         function copy() {
             navigator.clipboard.writeText('2200 7019 7567 8803');
-            const s = document.getElementById('copyStatus');
-            s.style.opacity = '1';
+            const s = document.getElementById('copyOk'); s.style.opacity = '1';
             setTimeout(() => s.style.opacity = '0', 2000);
         }
 
-        function thanks() { document.getElementById('success').style.display = 'flex'; }
+        function finish() { document.getElementById('modal').style.display = 'flex'; }
 
-        update();
+        createStars();
+        window.onload = () => update(true);
     </script>
 </body>
 </html>
