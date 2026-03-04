@@ -1,700 +1,99 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#1a0a0f">
-    <title>خير | Благо</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&family=Cormorant+Garamond:wght@400;600&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-            user-select: none;
-        }
-
-        body {
-            font-family: 'Cormorant Garamond', serif;
-            background: #0a0508;
-            color: #faf8f3;
-            min-height: 100vh;
-            overflow-x: hidden;
-            position: relative;
-        }
-
-        /* Падающие звезды и полумесяцы */
-        .snow-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1;
-            overflow: hidden;
-        }
-
-        .star-fall, .crescent-fall {
-            position: absolute;
-            top: -50px;
-            animation: fall linear infinite;
-            opacity: 0.8;
-        }
-
-        .star-fall {
-            width: 12px;
-            height: 12px;
-            background: linear-gradient(135deg, #f4e8c1, #d4af37);
-            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-        }
-
-        .crescent-fall {
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            box-shadow: -3px 2px 0 2px #d4af37;
-        }
-
-        @keyframes fall {
-            to {
-                transform: translateY(100vh) rotate(360deg);
-                opacity: 0;
-            }
-        }
-
-        /* Главный контейнер */
-        .container {
-            position: relative;
-            z-index: 10;
-            max-width: 480px;
-            margin: 0 auto;
-            padding: 40px 20px;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        /* Заголовок с секретом */
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-            position: relative;
-        }
-
-        .arabic-title {
-            font-family: 'Noto Naskh Arabic', serif;
-            font-size: 5rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #f4e8c1, #d4af37, #b8941f);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            cursor: pointer;
-            position: relative;
-            display: inline-block;
-            transition: transform 0.3s;
-        }
-
-        .arabic-title:active {
-            transform: scale(0.95);
-        }
-
-        .subtitle {
-            font-size: 1.4rem;
-            color: #d4af37;
-            letter-spacing: 4px;
-            margin-top: 10px;
-        }
-
-        .location {
-            margin-top: 15px;
-            font-size: 1rem;
-            color: rgba(250, 248, 243, 0.5);
-        }
-
-        /* Прогресс */
-        .progress-box {
-            width: 100%;
-            background: rgba(45, 10, 15, 0.8);
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            border-radius: 20px;
-            padding: 25px;
-            margin-bottom: 30px;
-            backdrop-filter: blur(10px);
-        }
-
-        .progress-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 15px;
-            font-size: 0.9rem;
-            color: #f4e8c1;
-        }
-
-        .progress-bar-bg {
-            height: 10px;
-            background: rgba(0,0,0,0.4);
-            border-radius: 5px;
-            overflow: hidden;
-        }
-
-        .progress-bar-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #b8941f, #d4af37, #f4e8c1);
-            border-radius: 5px;
-            transition: width 1s ease;
-            box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
-        }
-
-        .progress-stats {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 15px;
-            font-size: 0.85rem;
-            color: rgba(250, 248, 243, 0.6);
-        }
-
-        /* Карта */
-        .card-box {
-            width: 100%;
-            background: linear-gradient(135deg, rgba(45, 10, 15, 0.9), rgba(20, 5, 8, 0.9));
-            border: 2px solid rgba(212, 175, 55, 0.4);
-            border-radius: 20px;
-            padding: 30px;
-            text-align: center;
-            margin-bottom: 30px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .card-box::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 60%);
-            animation: pulse 4s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(0.8); }
-            50% { transform: scale(1.1); }
-        }
-
-        .card-label {
-            font-size: 0.9rem;
-            color: #f4e8c1;
-            margin-bottom: 20px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .card-number {
-            font-family: 'Courier New', monospace;
-            font-size: 1.6rem;
-            letter-spacing: 3px;
-            color: #faf8f3;
-            background: rgba(0,0,0,0.4);
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            cursor: pointer;
-            position: relative;
-            z-index: 1;
-            transition: all 0.3s;
-            word-break: break-all;
-        }
-
-        .card-number:hover {
-            border-color: #d4af37;
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
-        }
-
-        .card-number.copied {
-            background: rgba(212, 175, 55, 0.2);
-            border-color: #d4af37;
-        }
-
-        .copy-hint {
-            font-size: 0.8rem;
-            color: rgba(212, 175, 55, 0.7);
-            margin-top: 15px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .bank-name {
-            display: inline-block;
-            margin-top: 15px;
-            padding: 8px 20px;
-            background: rgba(212, 175, 55, 0.1);
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            border-radius: 20px;
-            font-size: 0.9rem;
-            color: #d4af37;
-            position: relative;
-            z-index: 1;
-        }
-
-        /* Спонсоры */
-        .donors-box {
-            width: 100%;
-            background: rgba(45, 10, 15, 0.8);
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            border-radius: 20px;
-            padding: 25px;
-            backdrop-filter: blur(10px);
-            max-height: 350px;
-            overflow-y: auto;
-        }
-
-        .donors-title {
-            font-size: 1.1rem;
-            color: #f4e8c1;
-            margin-bottom: 20px;
-            text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .donor-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 15px;
-            background: rgba(0,0,0,0.3);
-            border-radius: 10px;
-            margin-bottom: 10px;
-            border: 1px solid rgba(212, 175, 55, 0.1);
-        }
-
-        .donor-name {
-            color: #faf8f3;
-        }
-
-        .donor-amount {
-            color: #d4af37;
-            font-weight: 600;
-        }
-
-        /* Админ панель */
-        .admin-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.95);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .admin-modal.active {
-            display: flex;
-        }
-
-        .admin-content {
-            background: linear-gradient(135deg, #2d0a0f, #0a0508);
-            border: 2px solid #d4af37;
-            border-radius: 20px;
-            padding: 30px;
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-        }
-
-        .admin-input {
-            width: 100%;
-            padding: 15px;
-            background: rgba(0,0,0,0.5);
-            border: 2px solid rgba(212, 175, 55, 0.3);
-            border-radius: 10px;
-            color: #faf8f3;
-            font-size: 1rem;
-            margin: 20px 0;
-            text-align: center;
-        }
-
-        .admin-input:focus {
-            outline: none;
-            border-color: #d4af37;
-        }
-
-        .admin-btn {
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, #b8941f, #d4af37);
-            border: none;
-            border-radius: 10px;
-            color: #0a0508;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .admin-close {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 40px;
-            height: 40px;
-            background: rgba(212, 175, 55, 0.1);
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            border-radius: 50%;
-            color: #d4af37;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        .admin-stats {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin: 20px 0;
-        }
-
-        .stat-item {
-            background: rgba(0,0,0,0.3);
-            padding: 15px;
-            border-radius: 10px;
-            border: 1px solid rgba(212, 175, 55, 0.2);
-        }
-
-        .stat-value {
-            font-size: 1.5rem;
-            color: #d4af37;
-            font-weight: 600;
-        }
-
-        .stat-label {
-            font-size: 0.8rem;
-            color: rgba(250, 248, 243, 0.6);
-            margin-top: 5px;
-        }
-
-        /* Уведомление */
-        .toast {
-            position: fixed;
-            bottom: 100px;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: rgba(45, 10, 15, 0.95);
-            border: 1px solid #d4af37;
-            border-radius: 10px;
-            padding: 15px 30px;
-            color: #f4e8c1;
-            z-index: 2000;
-            opacity: 0;
-            transition: all 0.3s;
-        }
-
-        .toast.show {
-            transform: translateX(-50%) translateY(0);
-            opacity: 1;
-        }
-
-        /* Удержание прогресс */
-        .hold-indicator {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 60px;
-            height: 60px;
-            border: 3px solid rgba(212, 175, 55, 0.2);
-            border-top-color: #d4af37;
-            border-radius: 50%;
-            opacity: 0;
-            pointer-events: none;
-            z-index: 999;
-        }
-
-        .hold-indicator.active {
-            opacity: 1;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: translate(-50%, -50%) rotate(360deg); }
-        }
-    </style>
-</head>
-<body>
-    <!-- Падающие звезды -->
-    <div class="snow-container" id="snowContainer"></div>
-    
-    <!-- Индикатор удержания -->
-    <div class="hold-indicator" id="holdIndicator"></div>
-
-    <div class="container">
-        <!-- Шапка с секретом -->
-        <div class="header">
-            <div class="arabic-title" id="secretTitle">خير</div>
-            <div class="subtitle">БЛАГО</div>
-            <div class="location">Дербент • Рамадан 2025</div>
-        </div>
-
-        <!-- Прогресс -->
-        <div class="progress-box">
-            <div class="progress-header">
-                <span>Собрано</span>
-                <span id="currentAmount">0 ₽</span>
-            </div>
-            <div class="progress-bar-bg">
-                <div class="progress-bar-fill" id="progressBar" style="width: 0%"></div>
-            </div>
-            <div class="progress-stats">
-                <span>Цель: 100 000 ₽</span>
-                <span id="percentText">0%</span>
-            </div>
-        </div>
-
-        <!-- Номер карты -->
-        <div class="card-box">
-            <div class="card-label">Нажмите чтобы скопировать номер карты</div>
-            <div class="card-number" id="cardNumber" data-card="2200701975678803">
-                2200 7019 7567 8803
-            </div>
-            <div class="copy-hint" id="copyHint">Т-Банк • Нажмите для копирования</div>
-            <div class="bank-name">💳 Перевод по номеру карты</div>
-        </div>
-
-        <!-- Спонсоры -->
-        <div class="donors-box">
-            <div class="donors-title">
-                <span>☪</span>
-                <span>Последние спонсоры</span>
-                <span id="donorsCount" style="background: #d4af37; color: #0a0508; padding: 2px 8px; border-radius: 10px; font-size: 0.8rem;">0</span>
-            </div>
-            <div id="donorsList">
-                <div style="text-align: center; color: rgba(250,248,243,0.5); padding: 20px;">Загрузка...</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Админ панель -->
-    <div class="admin-modal" id="adminModal">
-        <button class="admin-close" id="closeAdmin">×</button>
-        <div class="admin-content" id="loginContent">
-            <h2 style="color: #d4af37; font-family: 'Noto Naskh Arabic', serif; font-size: 2rem; margin-bottom: 10px;">خير</h2>
-            <p style="color: rgba(250,248,243,0.6); margin-bottom: 20px;">Введите пароль</p>
-            <input type="password" class="admin-input" id="adminPass" placeholder="••••••••">
-            <button class="admin-btn" id="loginBtn">Войти</button>
-        </div>
-        
-        <div class="admin-content" id="panelContent" style="display: none;">
-            <h2 style="color: #d4af37; margin-bottom: 20px;">Панель управления</h2>
-            <div class="admin-stats">
-                <div class="stat-item">
-                    <div class="stat-value" id="statTotal">0</div>
-                    <div class="stat-label">Собрано</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value" id="statCount">0</div>
-                    <div class="stat-label">Спонсоров</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value" id="statLeft">100K</div>
-                    <div class="stat-label">Осталось</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value" id="statPercent">0%</div>
-                    <div class="stat-label">Готово</div>
-                </div>
-            </div>
-            <button class="admin-btn" id="refreshData" style="margin-top: 10px;">🔄 Обновить данные</button>
-        </div>
-    </div>
-
-    <!-- Toast -->
-    <div class="toast" id="toast">Номер скопирован!</div>
-
-    <script>
-        // Конфиг
-        const SHEET_ID = '1uppgItrSnXPR742RkgXqxDBD7zPAUXvk2jvA-nLwQTs';
-        const ADMIN_PASS = 'haieuzb2372hjdkwoajc92nf';
-        const TARGET = 100000;
-
-        // Создание падающих звезд (оптимизировано)
-        function createSnow() {
-            const container = document.getElementById('snowContainer');
-            const types = ['star-fall', 'crescent-fall'];
-            
-            setInterval(() => {
-                const el = document.createElement('div');
-                el.className = types[Math.floor(Math.random() * types.length)];
-                el.style.left = Math.random() * 100 + '%';
-                el.style.animationDuration = (Math.random() * 5 + 8) + 's';
-                el.style.opacity = Math.random() * 0.5 + 0.3;
-                container.appendChild(el);
-                
-                setTimeout(() => el.remove(), 13000);
-            }, 800);
-        }
-
-        // Данные
-        let donors = [];
-
-        async function loadData() {
-            try {
-                const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
-                const res = await fetch(url);
-                const text = await res.text();
-                const json = JSON.parse(text.substring(47).slice(0, -2));
-                
-                donors = [];
-                const rows = json.table.rows;
-                for (let i = 1; i < rows.length; i++) {
-                    const r = rows[i].c;
-                    if (r[0] && r[0].v) {
-                        donors.push({
-                            date: r[0].v,
-                            name: r[1] ? r[1].v : 'Аноним',
-                            amount: parseInt(r[2] ? r[2].v : 0) || 0
-                        });
-                    }
-                }
-                updateUI();
-            } catch (e) {
-                console.log('Ошибка загрузки');
-            }
-        }
-
-        function updateUI() {
-            const total = donors.reduce((a, b) => a + b.amount, 0);
-            const percent = Math.min((total / TARGET) * 100, 100);
-            
-            document.getElementById('currentAmount').textContent = total.toLocaleString() + ' ₽';
-            document.getElementById('progressBar').style.width = percent + '%';
-            document.getElementById('percentText').textContent = Math.round(percent) + '%';
-            document.getElementById('donorsCount').textContent = donors.length;
-            
-            const list = document.getElementById('donorsList');
-            if (donors.length === 0) {
-                list.innerHTML = '<div style="text-align: center; color: rgba(250,248,243,0.5); padding: 20px;">Пока нет пожертвований</div>';
-            } else {
-                list.innerHTML = donors.slice().reverse().map(d => `
-                    <div class="donor-item">
-                        <span class="donor-name">${d.name}</span>
-                        <span class="donor-amount">${d.amount.toLocaleString()} ₽</span>
-                    </div>
-                `).join('');
-            }
-            
-            // Обновить статистику в админке если открыта
-            document.getElementById('statTotal').textContent = (total / 1000).toFixed(1) + 'K';
-            document.getElementById('statCount').textContent = donors.length;
-            document.getElementById('statLeft').textContent = (Math.max(TARGET - total, 0) / 1000).toFixed(0) + 'K';
-            document.getElementById('statPercent').textContent = Math.round(percent) + '%';
-        }
-
-        // Копирование карты
-        document.getElementById('cardNumber').addEventListener('click', function() {
-            const num = this.dataset.card;
-            navigator.clipboard.writeText(num).then(() => {
-                this.classList.add('copied');
-                document.getElementById('copyHint').textContent = '✓ Скопировано!';
-                showToast('Номер карты скопирован');
-                setTimeout(() => {
-                    this.classList.remove('copied');
-                    document.getElementById('copyHint').textContent = 'Т-Банк • Нажмите для копирования';
-                }, 2000);
-            });
-        });
-
-        function showToast(msg) {
-            const t = document.getElementById('toast');
-            t.textContent = msg;
-            t.classList.add('show');
-            setTimeout(() => t.classList.remove('show'), 2000);
-        }
-
-        // Секретная панель - удержание 5 секунд
-        const title = document.getElementById('secretTitle');
-        let holdTimer = null;
-        let holdStart = 0;
-
-        function startHold(e) {
-            e.preventDefault();
-            holdStart = Date.now();
-            document.getElementById('holdIndicator').classList.add('active');
-            
-            holdTimer = setTimeout(() => {
-                document.getElementById('holdIndicator').classList.remove('active');
-                openAdmin();
-            }, 5000);
-        }
-
-        function endHold() {
-            if (holdTimer) {
-                clearTimeout(holdTimer);
-                holdTimer = null;
-            }
-            document.getElementById('holdIndicator').classList.remove('active');
-        }
-
-        title.addEventListener('mousedown', startHold);
-        title.addEventListener('touchstart', startHold);
-        title.addEventListener('mouseup', endHold);
-        title.addEventListener('touchend', endHold);
-        title.addEventListener('mouseleave', endHold);
-
-        // Админ панель
-        function openAdmin() {
-            document.getElementById('adminModal').classList.add('active');
-            document.getElementById('loginContent').style.display = 'block';
-            document.getElementById('panelContent').style.display = 'none';
-            document.getElementById('adminPass').value = '';
-            document.getElementById('adminPass').focus();
-        }
-
-        document.getElementById('closeAdmin').addEventListener('click', () => {
-            document.getElementById('adminModal').classList.remove('active');
-        });
-
-        document.getElementById('loginBtn').addEventListener('click', () => {
-            if (document.getElementById('adminPass').value === ADMIN_PASS) {
-                document.getElementById('loginContent').style.display = 'none';
-                document.getElementById('panelContent').style.display = 'block';
-                updateUI();
-            } else {
-                document.getElementById('adminPass').style.borderColor = '#ff4444';
-                setTimeout(() => {
-                    document.getElementById('adminPass').style.borderColor = '';
-                }, 1000);
-            }
-        });
-
-        document.getElementById('refreshData').addEventListener('click', function() {
-            this.textContent = '⏳ Обновление...';
-            loadData().then(() => {
-                setTimeout(() => {
-                    this.textContent = '🔄 Обновить данные';
-                    showToast('Данные обновлены');
-                }, 500);
-            });
-        });
-
-        // Закрытие по фону
-        document.getElementById('adminModal').addEventListener('click', (e) => {
-            if (e.target.id === 'adminModal') {
-                document.getElementById('adminModal').classList.remove('active');
-            }
-        });
-
-        // Инициализация
-        createSnow();
-        loadData();
-        setInterval(loadData, 120000); // Обновление каждые 2 минуты
-    </script>
-</body>
-</html>
+<div class="luxury-card">
+  <div class="inner-content">
+    <div class="crown">👑</div>
+    <h1 class="premium-text">EXCLUSIVE</h1>
+    <div class="divider"></div>
+    <p>Для той, кто заслуживает больше, чем просто слова.</p>
+    <div class="shimmer-effect"></div>
+  </div>
+</div>
+
+<style>
+  :root {
+    --gold: linear-gradient(135deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+  }
+  
+  body {
+    background: #050505;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+    font-family: 'Cinzel', serif; /* Или любая антиква */
+  }
+
+  .luxury-card {
+    position: relative;
+    width: 350px;
+    height: 500px;
+    background: #111;
+    border-radius: 20px;
+    padding: 3px; /* Для золотой рамки */
+    background-image: var(--gold);
+    box-shadow: 0 20px 50px rgba(179, 135, 40, 0.3);
+    transition: transform 0.5s ease;
+    cursor: pointer;
+  }
+
+  .luxury-card:hover {
+    transform: scale(1.05) rotateX(10deg) rotateY(10deg);
+  }
+
+  .inner-content {
+    background: #0a0a0a;
+    width: 100%;
+    height: 100%;
+    border-radius: 18px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .premium-text {
+    background: var(--gold);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 2.5rem;
+    font-weight: 900;
+    letter-spacing: 8px;
+    margin: 10px 0;
+  }
+
+  .divider {
+    width: 50px;
+    height: 2px;
+    background: var(--gold);
+    margin-bottom: 20px;
+  }
+
+  p {
+    color: #888;
+    text-align: center;
+    padding: 0 30px;
+    line-height: 1.6;
+    font-style: italic;
+  }
+
+  .shimmer-effect {
+    position: absolute;
+    top: -100%;
+    left: -100%;
+    width: 300%;
+    height: 300%;
+    background: linear-gradient(45deg, transparent, rgba(255,255,255,0.05), transparent);
+    transform: rotate(45deg);
+    animation: shimmer 4s infinite;
+  }
+
+  @keyframes shimmer {
+    0% { transform: translateX(-150%) rotate(45deg); }
+    100% { transform: translateX(150%) rotate(45deg); }
+  }
+
+  .crown { font-size: 3rem; margin-bottom: 20px; filter: drop-shadow(0 0 10px #b38728); }
+</style>
